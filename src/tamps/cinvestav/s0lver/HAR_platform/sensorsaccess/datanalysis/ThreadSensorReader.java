@@ -1,4 +1,4 @@
-package tamps.cinvestav.s0lver.HAR_platform.sensorsaccess;
+package tamps.cinvestav.s0lver.HAR_platform.sensorsaccess.datanalysis;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -83,7 +83,7 @@ public class ThreadSensorReader implements SensorEventListener{
      */
     private void timeoutReached() {
         Log.i(this.getClass().getSimpleName(), "Timeout reached, window filled");
-        ThreadDataProcessor threadDataProcessor = new ThreadDataProcessor(buffer);
+        ThreadDataProcessor threadDataProcessor = new ThreadDataProcessor(buffer, sizeOfAveragedSamples);
         Thread thread = new Thread(threadDataProcessor);
         thread.start();
         buffer = new ArrayList<>();
@@ -94,7 +94,7 @@ public class ThreadSensorReader implements SensorEventListener{
         float[] values = sensorEvent.values;
         AccelerometerReading accReading = new AccelerometerReading(values[0], values[1], values[2], System.currentTimeMillis());
         buffer.add(accReading);
-        Log.i(this.getClass().getSimpleName(), "Got: " + accReading);
+//        Log.i(this.getClass().getSimpleName(), "Got: " + accReading);
     }
 
     @Override

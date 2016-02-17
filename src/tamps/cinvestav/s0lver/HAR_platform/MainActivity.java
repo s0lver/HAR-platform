@@ -3,7 +3,7 @@ package tamps.cinvestav.s0lver.HAR_platform;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import tamps.cinvestav.s0lver.HAR_platform.sensorsaccess.ThreadSensorReader;
+import tamps.cinvestav.s0lver.HAR_platform.sensorsaccess.datanalysis.ThreadSensorReader;
 
 public class MainActivity extends Activity {
     private static final int ONE_SECOND = 1000;
