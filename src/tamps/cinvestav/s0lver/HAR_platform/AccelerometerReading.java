@@ -1,10 +1,14 @@
 package tamps.cinvestav.s0lver.HAR_platform;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class AccelerometerReading {
     private float x, y, z;
     private Date timestamp;
+    private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 
     public AccelerometerReading(float x, float y, float z, long timestamp) {
         this.x = x;
@@ -27,5 +31,10 @@ public class AccelerometerReading {
 
     public Date getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%f,%f,%f,%s", x, y, z, sdf.format(timestamp));
     }
 }
