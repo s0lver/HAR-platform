@@ -16,11 +16,11 @@ public class MagnitudeVectorFileWriter {
     private double stdDev, mean;
     private double[] magnitudeVector;
 
-    public MagnitudeVectorFileWriter(Date date, double stdDev, double mean, double[] magnitudeVector) {
+    public MagnitudeVectorFileWriter(String filePrefix, Date date, double stdDev, double mean, double[] magnitudeVector) {
         String DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         this.filepath = Environment.getExternalStorageDirectory() + File.separator
-                + "har-system" + File.separator + "magnitudevector_" + sdf.format(date) + ".csv";
+                + "har-system" + File.separator + filePrefix + "magnitudevector_" + sdf.format(date) + ".csv";
         this.stdDev = stdDev;
         this.mean = mean;
         this.magnitudeVector = magnitudeVector;

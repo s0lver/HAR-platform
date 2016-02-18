@@ -16,11 +16,11 @@ public class AccelerationsFileWriter {
     private String filepath;
     private ArrayList<AccelerometerReading> data;
 
-    public AccelerationsFileWriter(Date date, ArrayList<AccelerometerReading> data) {
+    public AccelerationsFileWriter(String filePrefix, Date date, ArrayList<AccelerometerReading> data) {
         String DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         this.filepath = Environment.getExternalStorageDirectory() + File.separator
-                + "har-system" + File.separator + "records_" + sdf.format(date) + ".csv";
+                + "har-system" + File.separator + filePrefix + "records_" + sdf.format(date) + ".csv";
         this.data = data;
     }
 

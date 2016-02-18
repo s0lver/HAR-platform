@@ -14,8 +14,10 @@ public class ThreadDataProcessor implements Runnable{
     private int sizeOfAveragedSamples;
     private double mean;
     private double stdDev;
+    private String filePrefix;
 
-    public ThreadDataProcessor(ArrayList<AccelerometerReading> samplingWindow, int sizeOfAveragedSamples) {
+    public ThreadDataProcessor(String filePrefix, ArrayList<AccelerometerReading> samplingWindow, int sizeOfAveragedSamples) {
+        this.filePrefix = filePrefix;
         this.samplingWindow = samplingWindow;
         this.sizeOfAveragedSamples = sizeOfAveragedSamples;
     }
@@ -25,14 +27,14 @@ public class ThreadDataProcessor implements Runnable{
         Date startTime = new Date(System.currentTimeMillis());
         Log.i(this.getClass().getSimpleName(), "Processing a sampling window of " + samplingWindow.size() + " elements");
 
-        new AccelerationsFileWriter(startTime, samplingWindow).writeFile();
+        new AccelerationsFileWriter(filePrefix, startTime, samplingWindow).writeFile();
         filterGravity();
         fuseFromAverage();
 
         calculateMagnitudeVector();
         calculateMean();
         calculateStandardDeviation();
-        new MagnitudeVectorFileWriter(startTime, stdDev, mean, magnitudeVector).writeFile();
+        new MagnitudeVectorFileWriter(filePrefix, startTime, stdDev, mean, magnitudeVector).writeFile();
     }
 
     /***

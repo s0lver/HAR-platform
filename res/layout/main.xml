@@ -4,13 +4,28 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
 >
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Select activity type:"
+                android:id="@+id/textView" android:layout_gravity="center_vertical"/>
+        <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lstActivities" android:layout_weight="1" android:spinnerMode="dialog"/>
+    </LinearLayout>
     <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Start readings"
             android:id="@+id/btnStartReadings" android:layout_gravity="center_horizontal"
-            android:onClick="clickStartReadings"/>
+            android:onClick="clickStartReadings" android:layout_marginTop="20dp"/>
     <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"

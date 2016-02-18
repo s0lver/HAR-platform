@@ -16,12 +16,14 @@ import java.util.TimerTask;
  * Reads data from accelerometer and triggers the processing of data
  */
 public class ThreadSensorReader implements SensorEventListener{
+    private static final int ONE_SECOND = 1000;
     private SensorManager sensorManager;
     private Sensor sensor;
     private int sizeOfWindow;
     private int sizeOfAveragedSamples;
     private Timer timerReadings;
     private TimerTask timerTaskReading;
+    private String activityType;
 
     private ArrayList<AccelerometerReading> buffer;
 
@@ -31,8 +33,9 @@ public class ThreadSensorReader implements SensorEventListener{
      * @param sizeOfWindow The size of the window on which data will be allocated, this is in millisecods
      * @param sizeOfAveragedSamples The size of the subsample to be averaged
      */
-    public ThreadSensorReader(Context context, int sizeOfWindow, int sizeOfAveragedSamples) {
+    public ThreadSensorReader(Context context, String activityType, int sizeOfWindow, int sizeOfAveragedSamples) {
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        this.activityType = activityType;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.sizeOfWindow = sizeOfWindow;
         this.sizeOfAveragedSamples = sizeOfAveragedSamples;
@@ -83,7 +86,8 @@ public class ThreadSensorReader implements SensorEventListener{
      */
     private void timeoutReached() {
         Log.i(this.getClass().getSimpleName(), "Timeout reached, window filled");
-        ThreadDataProcessor threadDataProcessor = new ThreadDataProcessor(buffer, sizeOfAveragedSamples);
+        String filePrefix = activityType + "_" + (sizeOfWindow/ONE_SECOND) + "_secs_" + sizeOfAveragedSamples + "_fused_";
+        ThreadDataProcessor threadDataProcessor = new ThreadDataProcessor(filePrefix, buffer, sizeOfAveragedSamples);
         Thread thread = new Thread(threadDataProcessor);
         thread.start();
         buffer = new ArrayList<>();
