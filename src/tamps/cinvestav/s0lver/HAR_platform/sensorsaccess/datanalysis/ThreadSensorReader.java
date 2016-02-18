@@ -9,6 +9,7 @@ import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.AccelerometerReading;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,11 +20,13 @@ public class ThreadSensorReader implements SensorEventListener{
     private static final int ONE_SECOND = 1000;
     private SensorManager sensorManager;
     private Sensor sensor;
+    private int currentRun;
     private int sizeOfWindow;
     private int sizeOfAveragedSamples;
     private Timer timerReadings;
     private TimerTask timerTaskReading;
     private String activityType;
+    private Date startTime;
 
     private ArrayList<AccelerometerReading> buffer;
 
@@ -39,6 +42,8 @@ public class ThreadSensorReader implements SensorEventListener{
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.sizeOfWindow = sizeOfWindow;
         this.sizeOfAveragedSamples = sizeOfAveragedSamples;
+        this.currentRun = 1;
+        this.startTime = new Date(System.currentTimeMillis());
     }
 
     /***
@@ -87,7 +92,7 @@ public class ThreadSensorReader implements SensorEventListener{
     private void timeoutReached() {
         Log.i(this.getClass().getSimpleName(), "Timeout reached, window filled");
         String filePrefix = activityType + "_" + (sizeOfWindow/ONE_SECOND) + "_secs_" + sizeOfAveragedSamples + "_fused_";
-        ThreadDataProcessor threadDataProcessor = new ThreadDataProcessor(filePrefix, buffer, sizeOfAveragedSamples);
+        ThreadDataProcessor threadDataProcessor = new ThreadDataProcessor(startTime, currentRun++, filePrefix, buffer, sizeOfAveragedSamples);
         Thread thread = new Thread(threadDataProcessor);
         thread.start();
         buffer = new ArrayList<>();

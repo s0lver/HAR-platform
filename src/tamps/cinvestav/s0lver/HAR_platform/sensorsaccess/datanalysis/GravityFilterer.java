@@ -4,17 +4,21 @@ import tamps.cinvestav.s0lver.HAR_platform.AccelerometerReading;
 
 public class GravityFilterer {
     private static final float ALPHA = (float) 0.8;
+    private float[] currentGravity;
 
-    public static void filterGravity(AccelerometerReading reading) {
-        float[] gravity = new float[3];
+    public GravityFilterer() {
+        currentGravity = new float[3];
+    }
+
+    public void filterGravity(AccelerometerReading reading) {
         // Isolate the force of gravity
-        gravity[0] = ALPHA * gravity[0] + (1 - ALPHA) * reading.getX();
-        gravity[1] = ALPHA * gravity[1] + (1 - ALPHA) * reading.getY();
-        gravity[2] = ALPHA * gravity[2] + (1 - ALPHA) * reading.getZ();
+        currentGravity[0] = ALPHA * currentGravity[0] + (1 - ALPHA) * reading.getX();
+        currentGravity[1] = ALPHA * currentGravity[1] + (1 - ALPHA) * reading.getY();
+        currentGravity[2] = ALPHA * currentGravity[2] + (1 - ALPHA) * reading.getZ();
 
         // Remove the gravity contribution with the high-pass filter
-        reading.setX(reading.getX() - gravity[0]);
-        reading.setY(reading.getY() - gravity[1]);
-        reading.setZ(reading.getZ() - gravity[2]);
+        reading.setX(reading.getX() - currentGravity[0]);
+        reading.setY(reading.getY() - currentGravity[1]);
+        reading.setZ(reading.getZ() - currentGravity[2]);
     }
 }

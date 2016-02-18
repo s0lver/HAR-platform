@@ -12,15 +12,14 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MagnitudeVectorFileWriter {
-    private String filepath;
+    private File vectorFile;
     private double stdDev, mean;
     private double[] magnitudeVector;
+    private int currentRun;
 
-    public MagnitudeVectorFileWriter(String filePrefix, Date date, double stdDev, double mean, double[] magnitudeVector) {
-        String DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-        this.filepath = Environment.getExternalStorageDirectory() + File.separator
-                + "har-system" + File.separator + filePrefix + "magnitudevector_" + sdf.format(date) + ".csv";
+    public MagnitudeVectorFileWriter(int currentRun, String filepath, double stdDev, double mean, double[] magnitudeVector) {
+        this.vectorFile = new File(filepath);
+        this.currentRun = currentRun;
         this.stdDev = stdDev;
         this.mean = mean;
         this.magnitudeVector = magnitudeVector;
@@ -29,10 +28,10 @@ public class MagnitudeVectorFileWriter {
     public void writeFile() {
         PrintWriter pw = null;
         try {
-            pw = new PrintWriter(new FileWriter(filepath));
-            pw.println("# Mean: " + mean + ", StdDev: " + stdDev);
+            pw = new PrintWriter(new FileWriter(vectorFile, true));
+            pw.println("# Run: " + currentRun + ", Mean: " + mean + ", StdDev: " + stdDev);
             for (double v : magnitudeVector) {
-                pw.println(v);
+                pw.println(currentRun + ", " + v);
             }
             pw.close();
         } catch (IOException e) {

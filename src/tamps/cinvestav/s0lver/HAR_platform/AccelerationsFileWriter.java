@@ -1,35 +1,30 @@
 package tamps.cinvestav.s0lver.HAR_platform;
 
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 public class AccelerationsFileWriter {
-    private String filepath;
+    private File accelerationsFile;
     private ArrayList<AccelerometerReading> data;
+    private int currentRun;
 
-    public AccelerationsFileWriter(String filePrefix, Date date, ArrayList<AccelerometerReading> data) {
-        String DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-        this.filepath = Environment.getExternalStorageDirectory() + File.separator
-                + "har-system" + File.separator + filePrefix + "records_" + sdf.format(date) + ".csv";
+    public AccelerationsFileWriter(int currentRun, String filepath, ArrayList<AccelerometerReading> data) {
         this.data = data;
+        this.currentRun = currentRun;
+        this.accelerationsFile = new File(filepath);
     }
 
     public void writeFile(){
         PrintWriter pw = null;
         try {
-            pw = new PrintWriter(new FileWriter(filepath));
+            pw = new PrintWriter(new FileWriter(accelerationsFile, true));
             for (AccelerometerReading reading : data) {
-                pw.println(reading);
+                pw.println(currentRun + "," + reading);
             }
             pw.close();
         } catch (IOException e) {
