@@ -39,7 +39,7 @@ public class ThreadSensorReader implements SensorEventListener{
     public ThreadSensorReader(Context context, String activityType, int sizeOfWindow, int sizeOfAveragedSamples) {
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.activityType = activityType;
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         this.sizeOfWindow = sizeOfWindow;
         this.sizeOfAveragedSamples = sizeOfAveragedSamples;
         this.currentRun = 1;
