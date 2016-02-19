@@ -1,7 +1,6 @@
 package tamps.cinvestav.s0lver.HAR_platform.sensorsaccess.datanalysis;
 
 import android.os.Environment;
-import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.AccelerationsFileWriter;
 import tamps.cinvestav.s0lver.HAR_platform.AccelerometerReading;
 import tamps.cinvestav.s0lver.HAR_platform.MagnitudeVectorFileWriter;
@@ -16,17 +15,17 @@ public class ThreadDataProcessor implements Runnable{
     private ArrayList<AccelerometerReading> samplingWindow;
     private GravityFilterer gravityFilterer;
     private double[] magnitudeVector;
-    private int sizeOfAveragedSamples;
+    private int subSamplingWindowSize;
     private double mean;
     private double stdDev;
     private final String associatedRecordsFileName;
     private final String associatedVectorFileName;
     private int currentRun;
 
-    public ThreadDataProcessor(Date startTime, int currentRun, String filePrefix, ArrayList<AccelerometerReading> samplingWindow, int sizeOfAveragedSamples) {
+    public ThreadDataProcessor(Date startTime, int currentRun, String filePrefix, ArrayList<AccelerometerReading> samplingWindow, int subSamplingWindowSize) {
         this.currentRun = currentRun;
         this.samplingWindow = samplingWindow;
-        this.sizeOfAveragedSamples = sizeOfAveragedSamples;
+        this.subSamplingWindowSize = subSamplingWindowSize;
         this.gravityFilterer = new GravityFilterer();
         String DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
@@ -38,12 +37,10 @@ public class ThreadDataProcessor implements Runnable{
 
     @Override
     public void run() {
-        Log.i(this.getClass().getSimpleName(), "Processing a sampling window of " + samplingWindow.size() + " elements");
-
         new AccelerationsFileWriter(currentRun, associatedRecordsFileName, samplingWindow).writeFile();
 
         filterGravity();
-        fuseFromAverage();
+        subsample();
         calculateMagnitudeVector();
         calculateMean();
         calculateStandardDeviation();
@@ -57,6 +54,8 @@ public class ThreadDataProcessor implements Runnable{
         for (AccelerometerReading reading : samplingWindow) {
             gravityFilterer.filterGravity(reading);
         }
+
+        // TODO Blow away first corrupted readings? (seen from the gravity perspective)
     }
 
     /***
@@ -100,41 +99,49 @@ public class ThreadDataProcessor implements Runnable{
     }
 
     /***
-     * Fuses each sizeOfAveragedSamples samples into one, using a simple average operation, and stores it
-     * into the same list of accelerometer readings.
+     * Updates each sample, considering the subSamplingWindowSize neighbors using a simple average operation
      * If it is not called, then the samplingWindow to be processed is the original one.
      */
-    private void fuseFromAverage() {
-        ArrayList<AccelerometerReading> averagedWindow = new ArrayList<>();
-        int i = 0;
+    private void subsample() {
+        ArrayList<AccelerometerReading> subSampleWindow = new ArrayList<>();
         float sigmaX, sigmaY, sigmaZ;
-        long sigmaTime = 0;
         sigmaX = sigmaY = sigmaZ = 0;
-        for (AccelerometerReading reading : samplingWindow) {
-            i++;
-            sigmaX += reading.getX();
-            sigmaY += reading.getY();
-            sigmaZ += reading.getZ();
-            sigmaTime += reading.getTimestamp().getTime();
 
-            if (i == sizeOfAveragedSamples) {
-                AccelerometerReading average =
-                        new AccelerometerReading(sigmaX / sizeOfAveragedSamples,
-                                sigmaY / sizeOfAveragedSamples,
-                                sigmaZ / sizeOfAveragedSamples,
-                                sigmaTime / sizeOfAveragedSamples);
+        int subWindowCenter = subSamplingWindowSize % 2 == 0 ? (subSamplingWindowSize / 2) - 1 : (int) (Math.ceil((double) subSamplingWindowSize / 2) - 1);
+        int startSubWindow = 0;
+        int endSubWindow = subSamplingWindowSize - 1;
 
-                averagedWindow.add(average);
-                sigmaX = sigmaY = sigmaZ = sigmaTime = 0;
-                i = 0;
+        int index;
+
+        boolean inside = true;
+        while (inside){
+            index = startSubWindow + subWindowCenter;
+            for (int i = 0; i < subSamplingWindowSize; i++) {
+                sigmaX += samplingWindow.get(startSubWindow + i).getX();
+                sigmaY += samplingWindow.get(startSubWindow + i).getY();
+                sigmaZ += samplingWindow.get(startSubWindow + i).getZ();
+            }
+
+            AccelerometerReading currentReading = samplingWindow.get(index);
+//            currentReading.setX(sigmaX / subSamplingWindowSize);
+//            currentReading.setY(sigmaY / subSamplingWindowSize);
+//            currentReading.setZ(sigmaZ / subSamplingWindowSize);
+//            subSampleWindow.add(currentReading); Fails because in the next iteration it will be different
+            AccelerometerReading fused = new AccelerometerReading(sigmaX / subSamplingWindowSize,
+                    sigmaY / subSamplingWindowSize,
+                    sigmaZ / subSamplingWindowSize,
+                    currentReading.getTimestamp().getTime());
+            subSampleWindow.add(fused);
+
+            startSubWindow++;
+            endSubWindow++;
+            sigmaX = sigmaY = sigmaZ = 0;
+            if (endSubWindow >= samplingWindow.size()) {
+                inside = false;
             }
         }
 
-        if (i != 0) {
-            AccelerometerReading average = new AccelerometerReading(sigmaX / i, sigmaY / i, sigmaZ / i, sigmaTime / i);
-            averagedWindow.add(average);
-        }
 
-        this.samplingWindow = averagedWindow;
+        this.samplingWindow = subSampleWindow;
     }
 }
