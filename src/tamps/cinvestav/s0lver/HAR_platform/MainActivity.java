@@ -48,12 +48,12 @@ public class MainActivity extends Activity {
 
     private void showWaitingBox() {
         ProgressDialog ringProgressDialog = ProgressDialog.show(MainActivity.this, "Please wait ...",	"Get ready ...", true);
-        ringProgressDialog.setCancelable(true);
+        ringProgressDialog.setCancelable(false);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(ONE_SECOND * 3);
+                    Thread.sleep(ONE_SECOND * 5);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(MainActivity.this, "Something wrong happened, I have to go", Toast.LENGTH_SHORT).show();

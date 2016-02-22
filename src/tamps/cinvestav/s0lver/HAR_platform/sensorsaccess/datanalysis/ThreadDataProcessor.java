@@ -40,7 +40,7 @@ public class ThreadDataProcessor implements Runnable{
         new AccelerationsFileWriter(currentRun, associatedRecordsFileName, samplingWindow).writeFile();
 
         filterGravity();
-        subsample();
+//        subsample();
         calculateMagnitudeVector();
         calculateMean();
         calculateStandardDeviation();
@@ -103,14 +103,14 @@ public class ThreadDataProcessor implements Runnable{
      * If it is not called, then the samplingWindow to be processed is the original one.
      */
     private void subsample() {
+        if (samplingWindow.size() < subSamplingWindowSize) return;
+
         ArrayList<AccelerometerReading> subSampleWindow = new ArrayList<>();
         float sigmaX, sigmaY, sigmaZ;
         sigmaX = sigmaY = sigmaZ = 0;
 
         int subWindowCenter = subSamplingWindowSize % 2 == 0 ? (subSamplingWindowSize / 2) - 1 : (int) (Math.ceil((double) subSamplingWindowSize / 2) - 1);
         int startSubWindow = 0;
-        int endSubWindow = subSamplingWindowSize - 1;
-
         int index;
 
         boolean inside = true;
@@ -123,10 +123,6 @@ public class ThreadDataProcessor implements Runnable{
             }
 
             AccelerometerReading currentReading = samplingWindow.get(index);
-//            currentReading.setX(sigmaX / subSamplingWindowSize);
-//            currentReading.setY(sigmaY / subSamplingWindowSize);
-//            currentReading.setZ(sigmaZ / subSamplingWindowSize);
-//            subSampleWindow.add(currentReading); Fails because in the next iteration it will be different
             AccelerometerReading fused = new AccelerometerReading(sigmaX / subSamplingWindowSize,
                     sigmaY / subSamplingWindowSize,
                     sigmaZ / subSamplingWindowSize,
@@ -134,9 +130,9 @@ public class ThreadDataProcessor implements Runnable{
             subSampleWindow.add(fused);
 
             startSubWindow++;
-            endSubWindow++;
             sigmaX = sigmaY = sigmaZ = 0;
-            if (endSubWindow >= samplingWindow.size()) {
+            int nextEnd = startSubWindow + subSamplingWindowSize - 1;
+            if (nextEnd >= samplingWindow.size()) {
                 inside = false;
             }
         }
