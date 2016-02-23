@@ -1,6 +1,7 @@
-package tamps.cinvestav.s0lver.HAR_platform;
+package tamps.cinvestav.s0lver.HAR_IO;
 
 import android.util.Log;
+import tamps.cinvestav.s0lver.HAR_Entities.entities.AccelerometerReading;
 
 import java.io.File;
 import java.io.FileWriter;

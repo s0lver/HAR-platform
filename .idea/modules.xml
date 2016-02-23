@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/HAR-Entities/HAR-Entities.iml" filepath="$PROJECT_DIR$/HAR-Entities/HAR-Entities.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HAR-IO/HAR-IO.iml" filepath="$PROJECT_DIR$/HAR-IO/HAR-IO.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HAR-Processing/HAR-Processing.iml" filepath="$PROJECT_DIR$/HAR-Processing/HAR-Processing.iml" />
       <module fileurl="file://$PROJECT_DIR$/HAR-platform.iml" filepath="$PROJECT_DIR$/HAR-platform.iml" />
     </modules>
   </component>

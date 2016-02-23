@@ -1,8 +1,6 @@
-package tamps.cinvestav.s0lver.HAR_platform;
+package tamps.cinvestav.s0lver.HAR_Entities.entities;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class AccelerometerReading {
     private float x, y, z;

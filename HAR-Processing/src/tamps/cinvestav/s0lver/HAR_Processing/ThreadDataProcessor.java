@@ -1,9 +1,9 @@
-package tamps.cinvestav.s0lver.HAR_platform.sensorsaccess.datanalysis;
+package tamps.cinvestav.s0lver.HAR_Processing;
 
 import android.os.Environment;
-import tamps.cinvestav.s0lver.HAR_platform.AccelerationsFileWriter;
-import tamps.cinvestav.s0lver.HAR_platform.AccelerometerReading;
-import tamps.cinvestav.s0lver.HAR_platform.MagnitudeVectorFileWriter;
+import tamps.cinvestav.s0lver.HAR_Entities.entities.AccelerometerReading;
+import tamps.cinvestav.s0lver.HAR_IO.AccelerationsFileWriter;
+import tamps.cinvestav.s0lver.HAR_IO.MagnitudeVectorFileWriter;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

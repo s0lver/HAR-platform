@@ -1,6 +1,6 @@
-package tamps.cinvestav.s0lver.HAR_platform.sensorsaccess.datanalysis;
+package tamps.cinvestav.s0lver.HAR_Processing;
 
-import tamps.cinvestav.s0lver.HAR_platform.AccelerometerReading;
+import tamps.cinvestav.s0lver.HAR_Entities.entities.AccelerometerReading;
 
 public class GravityFilterer {
     private static final float ALPHA = (float) 0.8;

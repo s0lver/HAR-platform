@@ -5,11 +5,10 @@ import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import tamps.cinvestav.s0lver.HAR_platform.sensorsaccess.datanalysis.ThreadSensorReader;
+import tamps.cinvestav.s0lver.HAR_Processing.ThreadSensorReader;
 
 public class MainActivity extends Activity {
     private static final int ONE_SECOND = 1000;

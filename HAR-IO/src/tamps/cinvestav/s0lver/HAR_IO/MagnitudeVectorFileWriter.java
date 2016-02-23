@@ -1,15 +1,11 @@
-package tamps.cinvestav.s0lver.HAR_platform;
+package tamps.cinvestav.s0lver.HAR_IO;
 
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class MagnitudeVectorFileWriter {
     private File vectorFile;

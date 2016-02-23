@@ -1,4 +1,4 @@
-package tamps.cinvestav.s0lver.HAR_platform.sensorsaccess.datanalysis;
+package tamps.cinvestav.s0lver.HAR_Processing;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -6,7 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
-import tamps.cinvestav.s0lver.HAR_platform.AccelerometerReading;
+import tamps.cinvestav.s0lver.HAR_Entities.entities.AccelerometerReading;
 
 import java.util.ArrayList;
 import java.util.Date;
