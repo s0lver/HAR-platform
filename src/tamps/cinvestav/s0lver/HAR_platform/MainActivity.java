@@ -8,7 +8,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import tamps.cinvestav.s0lver.HAR_Processing.ThreadSensorReader;
+import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
+import tamps.cinvestav.s0lver.HAR_platform.io.TrainingFilesReader;
+import tamps.cinvestav.s0lver.HAR_platform.processing.ThreadSensorReader;
+import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayes;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     private static final int ONE_SECOND = 1000;
@@ -30,6 +36,21 @@ public class MainActivity extends Activity {
     private void prepareSoundPlayers() {
         mediaPlayerOn = MediaPlayer.create(getApplicationContext(), R.raw.notification_on);
         mediaPlayerOff = MediaPlayer.create(getApplicationContext(), R.raw.notification_off);
+    }
+
+    public void clickTrainNaiveBayes(View view) {
+        NaiveBayes naiveBayes = null;
+        try {
+            ArrayList<ActivityPattern> patternsStatic = TrainingFilesReader.readStaticFile(getApplicationContext());
+            ArrayList<ActivityPattern> patternsWalking = TrainingFilesReader.readWalkingFile(getApplicationContext());
+            ArrayList<ActivityPattern> patternsRunning = TrainingFilesReader.readRunningFile(getApplicationContext());
+            patternsStatic.addAll(patternsWalking);
+            patternsStatic.addAll(patternsRunning);
+            naiveBayes = new NaiveBayes(patternsStatic);
+            naiveBayes.train();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void clickStartReadings(View view) {
