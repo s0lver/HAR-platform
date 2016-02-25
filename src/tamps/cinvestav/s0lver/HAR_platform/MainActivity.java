@@ -13,7 +13,7 @@ import tamps.cinvestav.s0lver.HAR_platform.activities.Activities;
 import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
 import tamps.cinvestav.s0lver.HAR_platform.io.TrainingFilesReader;
 import tamps.cinvestav.s0lver.HAR_platform.processing.ThreadSensorReader;
-import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayes;
+import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesTrainer;
 import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesListener;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
     MediaPlayer mediaPlayerRunning;
     private boolean readingInProgress;
     private Spinner lstActivities;
-    private NaiveBayes naiveBayes;
+    private NaiveBayesTrainer naiveBayesTrainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,32 +50,14 @@ public class MainActivity extends Activity {
     }
 
     public void clickTrainNaiveBayes(View view) {
-        try {
-            ArrayList<ActivityPattern> patternsStatic = TrainingFilesReader.readStaticFile(getApplicationContext());
-            ArrayList<ActivityPattern> patternsWalking = TrainingFilesReader.readWalkingFile(getApplicationContext());
-            ArrayList<ActivityPattern> patternsRunning = TrainingFilesReader.readRunningFile(getApplicationContext());
-            patternsStatic.addAll(patternsWalking);
-            patternsStatic.addAll(patternsRunning);
-            naiveBayes = new NaiveBayes(patternsStatic);
-            naiveBayes.train();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        naiveBayesTrainer = new NaiveBayesTrainer(getApplicationContext());
+        naiveBayesTrainer.train();
     }
 
     public void clickClassifyNaiveBayes(View view) {
         ActivityPattern patternStatic = new ActivityPattern(Activities.STATIC, 0.133316815, 0.032953133);
         ActivityPattern patternWalking = new ActivityPattern(Activities.WALKING, 4.901127318, 2.329955038);
         ActivityPattern patternRunning = new ActivityPattern(Activities.RUNNING, 11.09304163, 4.731527324);
-
-        byte predStatic = naiveBayes.classify(patternStatic);
-        Log.i(this.getClass().getSimpleName(), "Static has been classified as " + predStatic);
-
-        byte predWalking = naiveBayes.classify(patternWalking);
-        Log.i(this.getClass().getSimpleName(), "Walking has been classified as " + predWalking);
-
-        byte predRunning = naiveBayes.classify(patternRunning);
-        Log.i(this.getClass().getSimpleName(), "Running has been classified as " + predRunning);
     }
 
     public void clickStartReadings(View view) {
