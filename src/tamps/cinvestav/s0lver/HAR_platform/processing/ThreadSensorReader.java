@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.entities.AccelerometerReading;
+import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +28,8 @@ public class ThreadSensorReader implements SensorEventListener{
     private TimerTask timerTaskReading;
     private String activityType;
     private Date startTime;
+    private Context context;
+    private NaiveBayesListener naiveBayesListener;
 
     private ArrayList<AccelerometerReading> buffer;
 
@@ -36,7 +39,9 @@ public class ThreadSensorReader implements SensorEventListener{
      * @param sizeOfWindow The size of the window on which data will be allocated, this is in millisecods
      * @param sizeOfAveragedSamples The size of the subsample to be averaged
      */
-    public ThreadSensorReader(Context context, String activityType, int sizeOfWindow, int sizeOfAveragedSamples) {
+    public ThreadSensorReader(Context context, NaiveBayesListener naiveBayesListener, String activityType, int sizeOfWindow, int sizeOfAveragedSamples) {
+        this.context = context;
+        this.naiveBayesListener = naiveBayesListener;
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.activityType = activityType;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -92,7 +97,7 @@ public class ThreadSensorReader implements SensorEventListener{
     private void timeoutReached() {
         Log.i(this.getClass().getSimpleName(), "Timeout reached, window filled");
         String filePrefix = activityType + "_" + (sizeOfWindow/ONE_SECOND) + "_secs_" + sizeOfAveragedSamples + "_fused_";
-        ThreadDataProcessor threadDataProcessor = new ThreadDataProcessor(startTime, currentRun++, filePrefix, buffer, sizeOfAveragedSamples);
+        ThreadDataProcessor threadDataProcessor = new ThreadDataProcessor(context, startTime, currentRun++, filePrefix, buffer, sizeOfAveragedSamples, naiveBayesListener);
         Thread thread = new Thread(threadDataProcessor);
         thread.start();
         buffer = new ArrayList<>();

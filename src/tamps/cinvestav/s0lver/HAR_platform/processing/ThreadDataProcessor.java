@@ -1,11 +1,17 @@
 package tamps.cinvestav.s0lver.HAR_platform.processing;
 
+import android.content.Context;
 import android.os.Environment;
+import tamps.cinvestav.s0lver.HAR_platform.activities.Activities;
+import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
 import tamps.cinvestav.s0lver.HAR_platform.entities.AccelerometerReading;
-import tamps.cinvestav.s0lver.HAR_platform.io.AccelerationsFileWriter;
-import tamps.cinvestav.s0lver.HAR_platform.io.MagnitudeVectorFileWriter;
+import tamps.cinvestav.s0lver.HAR_platform.io.NaiveBayesConfigurationFileReader;
+import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayes;
+import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesConfiguration;
+import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,11 +27,21 @@ public class ThreadDataProcessor implements Runnable{
     private final String associatedRecordsFileName;
     private final String associatedVectorFileName;
     private int currentRun;
+    private NaiveBayes naiveBayes;
+    private NaiveBayesListener naiveBayesListener;
+    private final static int UNIQUE_CLASES = 3;
+    private Context context;
 
-    public ThreadDataProcessor(Date startTime, int currentRun, String filePrefix, ArrayList<AccelerometerReading> samplingWindow, int subSamplingWindowSize) {
+    public ThreadDataProcessor(Context context, Date startTime,
+                               int currentRun, String filePrefix,
+                               ArrayList<AccelerometerReading> samplingWindow, int subSamplingWindowSize,
+                               NaiveBayesListener naiveBayesListener) {
+        this.context = context;
         this.currentRun = currentRun;
         this.samplingWindow = samplingWindow;
         this.subSamplingWindowSize = subSamplingWindowSize;
+        this.naiveBayesListener = naiveBayesListener;
+
         this.gravityFilterer = new GravityFilterer();
         String DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
@@ -37,13 +53,30 @@ public class ThreadDataProcessor implements Runnable{
 
     @Override
     public void run() {
-        new AccelerationsFileWriter(currentRun, associatedRecordsFileName, samplingWindow).writeFile();
-
+//        new AccelerationsFileWriter(currentRun, associatedRecordsFileName, samplingWindow).writeFile();
         // filterGravity();
         calculateMagnitudeVector();
         calculateMean();
         calculateStandardDeviation();
-        new MagnitudeVectorFileWriter(currentRun, associatedVectorFileName, stdDev, mean, magnitudeVector).writeFile();
+//        new MagnitudeVectorFileWriter(currentRun, associatedVectorFileName, stdDev, mean, magnitudeVector).writeFile();
+        buildNaiveBayes();
+        testNaiveBayes();
+    }
+
+    private void testNaiveBayes() {
+        ActivityPattern pattern = new ActivityPattern(Activities.RUNNING, mean, stdDev);
+        byte pred = naiveBayes.classify(pattern);
+        naiveBayesListener.notify(pred);
+    }
+
+    private void buildNaiveBayes() {
+        try {
+            NaiveBayesConfiguration nbConf = NaiveBayesConfigurationFileReader.readFile(context, UNIQUE_CLASES);
+            naiveBayes = new NaiveBayes(nbConf);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /***

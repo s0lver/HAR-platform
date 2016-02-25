@@ -1,8 +1,13 @@
 package tamps.cinvestav.s0lver.HAR_platform.processing.classifiers;
 
+import android.os.Environment;
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class NaiveBayes {
@@ -14,22 +19,40 @@ public class NaiveBayes {
     private double[][] meanPerClass;
     private double[][] variancePerClass;
 
+    double[] pdfPerClass;
+    double[] MAP;
+
+    int stdDevDimension = 0;
+    int meanDimension = 1;
+    int totalDimensions = 2;
+
+    /***
+     * Constructor used when training
+     * @param patterns    The patterns to train the NaiveBayes classifier
+     */
     public NaiveBayes(ArrayList<ActivityPattern> patterns) {
         this.patterns = patterns;
+    }
+
+    /***
+     * Constructor used when classifying
+     * @param nbConfiguration
+     */
+    public NaiveBayes(NaiveBayesConfiguration nbConfiguration) {
+        this.probabilityPerClass = nbConfiguration.getProbabilityPerClass();
+        this.meanPerClass = nbConfiguration.getMeanPerClass();
+        this.variancePerClass = nbConfiguration.getVariancePerClass();
+        this.uniqueClasses = 3;
     }
 
     /***
      * Trains the Naive Bayes classifier using the ActivityPattern field
      */
     public void train() {
-        int dimensions = 2; // We have mean and std dev dimensions
-        int stdDevDimension = 0;
-        int meanDimension = 1;
-
         countUniqueClasses();
         probabilityPerClass = new double[uniqueClasses];
-        meanPerClass = new double[dimensions][uniqueClasses];
-        variancePerClass = new double[dimensions][uniqueClasses];
+        meanPerClass = new double[totalDimensions][uniqueClasses];
+        variancePerClass = new double[totalDimensions][uniqueClasses];
 
         for (int i = 0; i < uniqueClasses; i++) {
             ArrayList<ActivityPattern> patternsOfCurrentClass = getPatternsOfClass(i + 1); // Remember first class is 1
@@ -45,7 +68,22 @@ public class NaiveBayes {
             variancePerClass[meanDimension][i] = variances[meanDimension] + laplaceCorrection;
         }
 
-//        printValues();
+        writeData();
+    }
+
+    private void writeData() {
+        try {
+            PrintWriter pw = new PrintWriter(new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator
+                    + "har-system" + File.separator + "training-configuration.csv"));
+            for (int i = 0; i < uniqueClasses; i++) {
+                pw.println(probabilityPerClass[i]);
+                pw.println(meanPerClass[stdDevDimension][i] + "," + meanPerClass[meanDimension][i]);
+                pw.println(variancePerClass[stdDevDimension][i] + "," + variancePerClass[meanDimension][i]);
+            }
+            pw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void printValues() {
@@ -103,46 +141,40 @@ public class NaiveBayes {
         return filteredPatterns;
     }
 
+    public byte classify(ActivityPattern pattern) {
+        double[][] probability = new double[totalDimensions][uniqueClasses];
+        pdfPerClass = new double[uniqueClasses];
+        MAP = new double[uniqueClasses];
 
+        for (int k = 0; k < uniqueClasses; k++) {
+            probability[stdDevDimension][k] = (1 / Math.sqrt(2 * Math.PI * variancePerClass[stdDevDimension][k]))
+                    * Math.exp(-(Math.pow(pattern.getStandardDeviation() - meanPerClass[stdDevDimension][k], 2)
+                    / (2 * variancePerClass[stdDevDimension][k])));
 
-    public void classify() {
-        //    % Total de clases reconocidas durante el entrenamiento
-//            totalClases = size(P_wi,2);
-//
-//    % Inicialización de variables
-//            map = zeros(totalClases,totalInstances);
-//    Ypred = zeros(1,totalInstances);
-//    sigma_error = 0;
-//    prob = zeros(totalDimensions,totalClases);
-//    pdf = zeros(totalClases, totalInstances);
-//
-//    % Por cada instancia a clasificar
-//    for x = 1:totalInstances
-//            x_i = Xtt(:,x);
-//    % Por cada una de las clases
-//    for k = 1:totalClases
-//    % Calcular la probabilidad de que cada atributo pertenezca a esa
-//    % clase
-//    for j = 1:totalDimensions
-//    prob(j, k) = (1/sqrt(2*pi*var_wi(j, k))) * ...
-//    exp(- (power(x_i(j) - mu_wi(j,k), 2) / ...
-//            (2 * var_wi(j, k))) );
-//    end
-//    % Calcular la productoria de las probabilidades de los atributos
-//    % para esta clase
-//    pdf(k, x) = prod(prob(:,k));
-//    % Multiplicar por la probabilidad de esta clase (en este caso es
-//            % constante) y almacenar para decisión posterior
-//    map(k, x) = pdf(k, x) * P_wi(1,k);
-//    end
-//
-//    % Una vez calculadas las probabilidades, simplemente elegir la
-//    % mayor...
-//            [~,predicted] = max(map(:,x));
-//    % ...colocarla en Ypred...
-//    Ypred(x) = predicted;
-//    %...y actualizar la cantidad de errores en caso de discrepancia
-//    sigma_error = sigma_error + (predicted ~= Ytt(x));
-//    end
+            probability[meanDimension][k] = (1 / Math.sqrt(2 * Math.PI * variancePerClass[meanDimension][k]))
+                    * Math.exp(-(Math.pow(pattern.getMean() - meanPerClass[meanDimension][k], 2)
+                    / (2 * variancePerClass[meanDimension][k])));
+
+            pdfPerClass[k] = probability[stdDevDimension][k] * probability[meanDimension][k];
+            MAP[k] = probabilityPerClass[k] * pdfPerClass[k];
+        }
+
+        for (int i = 0; i < uniqueClasses; i++) {
+            Log.i(this.getClass().getSimpleName(), "MAP[" + i + "] = " + MAP[i]);
+        }
+
+        return getHighestMap(MAP);
+    }
+
+    private byte getHighestMap(double[] map) {
+        byte largestIndex = -1;
+        double largestValue = 0;
+        for (int i = 0; i < map.length; i++) {
+            if (map[i] > largestValue) {
+                largestIndex = (byte) (i + 1);
+                largestValue = map[i];
+            }
+        }
+        return largestIndex;
     }
 }
