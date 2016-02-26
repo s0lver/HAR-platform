@@ -1,89 +1,76 @@
-package tamps.cinvestav.s0lver.HAR_platform.processing;
+package tamps.cinvestav.s0lver.HAR_platform.modules;
 
-import android.content.Context;
 import android.os.Environment;
 import tamps.cinvestav.s0lver.HAR_platform.activities.Activities;
 import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
 import tamps.cinvestav.s0lver.HAR_platform.entities.AccelerometerReading;
-import tamps.cinvestav.s0lver.HAR_platform.io.NaiveBayesConfigurationFileReader;
-import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesClassifier;
-import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesTrainer;
-import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesConfiguration;
-import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesListener;
+import tamps.cinvestav.s0lver.HAR_platform.io.MagnitudeVectorFileWriter;
+import tamps.cinvestav.s0lver.HAR_platform.io.PatternsFileWriter;
+import tamps.cinvestav.s0lver.HAR_platform.utils.Constants;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
-public class ThreadDataProcessor implements Runnable{
+/***
+ * Preprocesses a list of AccelerometerReadings.
+ * Internally builds a magnitude vector, at the end the produced output is
+ * the mean and stdDev attributes of such magnitude vector.
+ */
+public class ModuleAccelerometerPreprocessor {
     private ArrayList<AccelerometerReading> samplingWindow;
-    private GravityFilterer gravityFilterer;
     private double[] magnitudeVector;
-    private int subSamplingWindowSize;
     private double mean;
     private double stdDev;
-    private final String associatedRecordsFileName;
-    private final String associatedVectorFileName;
-    private int currentRun;
-    private NaiveBayesClassifier naiveBayesTrainer;
-    private NaiveBayesListener naiveBayesListener;
-    private final static int UNIQUE_CLASES = 3;
-    private Context context;
 
-    public ThreadDataProcessor(Context context, Date startTime,
-                               int currentRun, String filePrefix,
-                               ArrayList<AccelerometerReading> samplingWindow, int subSamplingWindowSize,
-                               NaiveBayesListener naiveBayesListener) {
-        this.context = context;
-        this.currentRun = currentRun;
+    private final int sizeOfWindow;
+    private final int subSamplingWindowSize;
+    private final String activityType;
+
+    private Date startTime;
+
+    public ModuleAccelerometerPreprocessor(ArrayList<AccelerometerReading> samplingWindow,
+                                           String activityType,
+                                           int sizeOfWindow,
+                                           int subSamplingWindowSize,
+                                           Date startTime) {
+        this.activityType = activityType;
+        this.sizeOfWindow = sizeOfWindow;
         this.samplingWindow = samplingWindow;
         this.subSamplingWindowSize = subSamplingWindowSize;
-        this.naiveBayesListener = naiveBayesListener;
-
-        this.gravityFilterer = new GravityFilterer();
-        String DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-        this.associatedRecordsFileName = Environment.getExternalStorageDirectory() + File.separator
-                + "har-system" + File.separator + filePrefix + "records_" + sdf.format(startTime) + ".csv";
-        this.associatedVectorFileName = Environment.getExternalStorageDirectory() + File.separator
-                + "har-system" + File.separator + filePrefix + "magnitudevector_" + sdf.format(startTime) + ".csv";
+        this.startTime = new Date(System.currentTimeMillis());
+        this.startTime = startTime;
     }
 
-    @Override
-    public void run() {
+    public double[] preprocessSamplingWindow() {
+        // filterGravity();
         calculateMagnitudeVector();
         calculateMean();
         calculateStandardDeviation();
-        buildNaiveBayes();
-        testNaiveBayes();
+        writeFiles();
+        return new double[]{stdDev, mean};
     }
 
-    private void testNaiveBayes() {
-        ActivityPattern pattern = new ActivityPattern(Activities.RUNNING, mean, stdDev);
-        byte pred = naiveBayesTrainer.classify(pattern);
-        naiveBayesListener.notify(pred);
-    }
-
-    private void buildNaiveBayes() {
-        try {
-            NaiveBayesConfiguration nbConf = NaiveBayesConfigurationFileReader.readFile(context, UNIQUE_CLASES);
-            naiveBayesTrainer = new NaiveBayesClassifier(nbConf);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    /***
+     * Write the patterns [~ (deleted) and magnitude vectors] to file system
+     */
+    private void writeFiles() {
+        String filePrefix = activityType + "_" + (sizeOfWindow / Constants.ONE_SECOND) + "_secs_";
+        String partialFilePath = Environment.getExternalStorageDirectory() + File.separator +
+                "har-system" + File.separator + filePrefix;
+//        String filepathMagnitudeVector = partialFilePath + "magnitudevector_" + Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
+//        new MagnitudeVectorFileWriter(currentRun, filepathMagnitudeVector, magnitudeVector).writeFile();
+        String filepathPatterns = partialFilePath + "patterns_" + Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
+        ActivityPattern pattern = new ActivityPattern(Activities.UNKNOWN, stdDev, mean);
+        new PatternsFileWriter(filepathPatterns, pattern).writeFile();
     }
 
     /***
      * Filters out the gravity on each acceleration reading
      */
     private void filterGravity() {
-        for (AccelerometerReading reading : samplingWindow) {
-            gravityFilterer.filterGravity(reading);
-        }
+        GravityFilterer gravityFilterer = new GravityFilterer(samplingWindow);
+        gravityFilterer.filterGravity();
     }
 
     /***
@@ -132,6 +119,7 @@ public class ThreadDataProcessor implements Runnable{
      */
     private void subsample() {
         if (samplingWindow.size() < subSamplingWindowSize) return;
+        if (subSamplingWindowSize==1) return;
 
         ArrayList<AccelerometerReading> subSampleWindow = new ArrayList<>();
         float sigmaX, sigmaY, sigmaZ;
@@ -164,8 +152,6 @@ public class ThreadDataProcessor implements Runnable{
                 inside = false;
             }
         }
-
-
         this.samplingWindow = subSampleWindow;
     }
 }

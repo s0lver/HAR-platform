@@ -1,4 +1,4 @@
-package tamps.cinvestav.s0lver.HAR_platform.processing.classifiers;
+package tamps.cinvestav.s0lver.HAR_platform.classifiers;
 
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
@@ -19,10 +19,10 @@ public class NaiveBayesClassifier {
 
     /***
      * Creates a Naive Bayes classifier using the specified training information
-     * @param nbConf The configuration "learned" and to be employed by the NB classifier
+     * @param naiveBayesConfiguration The configuration "learned" and to be employed by the NB classifier
      */
-    public NaiveBayesClassifier(NaiveBayesConfiguration nbConf) {
-        this.nbConf = nbConf;
+    public NaiveBayesClassifier(NaiveBayesConfiguration naiveBayesConfiguration) {
+        this.nbConf = naiveBayesConfiguration;
         this.uniqueClasses = 3;
     }
 

@@ -1,4 +1,4 @@
-package tamps.cinvestav.s0lver.HAR_platform.processing.classifiers;
+package tamps.cinvestav.s0lver.HAR_platform.classifiers;
 
 public class NaiveBayesConfiguration {
     private double[] probabilityPerClass;

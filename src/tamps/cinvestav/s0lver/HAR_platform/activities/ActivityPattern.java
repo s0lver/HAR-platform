@@ -5,14 +5,18 @@ public class ActivityPattern {
     private double mean;
     private double standardDeviation;
 
-    public ActivityPattern(byte type, double mean, double standardDeviation) {
+    public ActivityPattern(byte type, double standardDeviation, double mean) {
         this.type = type;
-        this.mean = mean;
         this.standardDeviation = standardDeviation;
+        this.mean = mean;
     }
 
     public byte getType() {
         return type;
+    }
+
+    public void setType(byte type) {
+        this.type = type;
     }
 
     public double getMean() {

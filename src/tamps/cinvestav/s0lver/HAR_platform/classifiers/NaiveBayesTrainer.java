@@ -1,18 +1,18 @@
-package tamps.cinvestav.s0lver.HAR_platform.processing.classifiers;
+package tamps.cinvestav.s0lver.HAR_platform.classifiers;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
-import tamps.cinvestav.s0lver.HAR_platform.io.TrainingFilesReader;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class NaiveBayesTrainer {
     private final double laplaceCorrection = 0.01;
     private ArrayList<ActivityPattern> patterns;
-    private Context context;
 
     private byte uniqueClasses;
     private double[] probabilityPerClass;
@@ -24,31 +24,13 @@ public class NaiveBayesTrainer {
     int totalDimensions = 2;
 
     /***
-     * Constructor for training. Reads the content of files on the assets folder.
-     * (By the moment files should be inserted in the project when compiling + uploading)
-     * @param context The context for accessing the assets folder
+     * Constructor for training
+     * @param patterns The patterns to be employed for learning. The list of patterns can (and should) contain
+     *                 mixed types of activities.
+     * @see tamps.cinvestav.s0lver.HAR_platform.activities.Activities
      */
-    public NaiveBayesTrainer(Context context) {
-        try {
-            loadPatterns();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /***
-     * Loads the patterns from the files
-     * @throws IOException
-     */
-    private void loadPatterns() throws IOException {
-        ArrayList<ActivityPattern> patternsStatic = TrainingFilesReader.readStaticFile(context);
-        ArrayList<ActivityPattern> patternsWalking = TrainingFilesReader.readWalkingFile(context);
-        ArrayList<ActivityPattern> patternsRunning = TrainingFilesReader.readRunningFile(context);
-
-        patterns.addAll(patternsStatic);
-        patterns.addAll(patternsWalking);
-        patterns.addAll(patternsRunning);
+    public NaiveBayesTrainer(ArrayList<ActivityPattern> patterns) {
+        this.patterns = patterns;
     }
 
     /***

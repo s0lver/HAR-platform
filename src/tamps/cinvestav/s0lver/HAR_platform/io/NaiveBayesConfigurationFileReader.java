@@ -1,7 +1,7 @@
 package tamps.cinvestav.s0lver.HAR_platform.io;
 
 import android.content.Context;
-import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesConfiguration;
+import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesConfiguration;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -10,26 +10,24 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import tamps.cinvestav.s0lver.HAR_platform.activities.Activities;
-import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
-import tamps.cinvestav.s0lver.HAR_platform.io.TrainingFilesReader;
-import tamps.cinvestav.s0lver.HAR_platform.processing.ThreadSensorReader;
-import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesTrainer;
-import tamps.cinvestav.s0lver.HAR_platform.processing.classifiers.NaiveBayesListener;
-
-import java.io.IOException;
-import java.util.ArrayList;
+import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesConfiguration;
+import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesListener;
+import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleAccelerometerClassifier;
+import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleAccelerometerLogger;
+import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleTrainer;
+import tamps.cinvestav.s0lver.HAR_platform.utils.Constants;
 
 public class MainActivity extends Activity {
-    private static final int ONE_SECOND = 1000;
-    private ThreadSensorReader reader;
     private MediaPlayer mediaPlayerOn;
     private MediaPlayer mediaPlayerOff;
-    MediaPlayer mediaPlayerStatic;
-    MediaPlayer mediaPlayerWalking;
-    MediaPlayer mediaPlayerRunning;
+    private MediaPlayer mediaPlayerStatic;
+    private MediaPlayer mediaPlayerWalking;
+    private MediaPlayer mediaPlayerRunning;
+
+    private ModuleAccelerometerLogger reader;
+    private ModuleAccelerometerClassifier classifier;
     private boolean readingInProgress;
     private Spinner lstActivities;
-    private NaiveBayesTrainer naiveBayesTrainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +36,7 @@ public class MainActivity extends Activity {
 
         prepareSoundPlayers();
         prepareSpinners();
+        this.classifier = new ModuleAccelerometerClassifier(getApplicationContext(), buildActivityDetector(), 5 * Constants.ONE_SECOND);
     }
 
     private void prepareSoundPlayers() {
@@ -50,25 +49,27 @@ public class MainActivity extends Activity {
     }
 
     public void clickTrainNaiveBayes(View view) {
-        naiveBayesTrainer = new NaiveBayesTrainer(getApplicationContext());
-        naiveBayesTrainer.train();
+        ModuleTrainer trainer = new ModuleTrainer(this);
+        NaiveBayesConfiguration train = trainer.train();
     }
 
-    public void clickClassifyNaiveBayes(View view) {
-        ActivityPattern patternStatic = new ActivityPattern(Activities.STATIC, 0.133316815, 0.032953133);
-        ActivityPattern patternWalking = new ActivityPattern(Activities.WALKING, 4.901127318, 2.329955038);
-        ActivityPattern patternRunning = new ActivityPattern(Activities.RUNNING, 11.09304163, 4.731527324);
+    public void clickStartClassification(View view) {
+        classifier.startClassification();
     }
 
-    public void clickStartReadings(View view) {
+    public void clickStopClassification(View view) {
+        classifier.stopClassification();
+    }
+
+    public void clickStartCollection(View view) {
         String selectedActivity = lstActivities.getSelectedItem().toString().toLowerCase();
-        reader = new ThreadSensorReader(getApplicationContext(), buildActivityDetector(), selectedActivity, 5 * ONE_SECOND, 3);
+        reader = new ModuleAccelerometerLogger(getApplicationContext(), selectedActivity, 5 * Constants.ONE_SECOND);
 
         showWaitingBox();
     }
 
-    private void startReadings() {
-        reader.startReadings();
+    private void startCollection() {
+        reader.startAccelerometerReadings();
         mediaPlayerOn.start();
         readingInProgress = true;
     }
@@ -80,20 +81,20 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(ONE_SECOND);
+                    Thread.sleep(Constants.ONE_SECOND);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(MainActivity.this, "Something wrong happened, I have to go", Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 ringProgressDialog.dismiss();
-                startReadings();
+                startCollection();
             }
         }).start();
     }
 
-    public void clickStopReadings(View view) {
-        reader.stopReadings();
+    public void clickStopCollection(View view) {
+        reader.stopAccelerometerReadings();
         readingInProgress = false;
         mediaPlayerOff.start();
     }
@@ -101,7 +102,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (readingInProgress) reader.stopReadings();
+        if (readingInProgress) reader.stopAccelerometerReadings();
 
         mediaPlayerOn.reset();
         mediaPlayerOn.release();
@@ -124,7 +125,7 @@ public class MainActivity extends Activity {
     private NaiveBayesListener buildActivityDetector() {
         return new NaiveBayesListener() {
             @Override
-            public void notify(byte activityType) {
+            public void onClassifiedPattern(byte activityType) {
                 switch (activityType) {
                     case Activities.STATIC:
                         mediaPlayerStatic.start();
@@ -137,9 +138,6 @@ public class MainActivity extends Activity {
                         break;
                     default:
                         Log.i(MainActivity.this.getClass().getSimpleName(), "Unknown activity type");
-                }
-                if (activityType == Activities.STATIC) {
-                    mediaPlayerStatic.start();
                 }
             }
         };

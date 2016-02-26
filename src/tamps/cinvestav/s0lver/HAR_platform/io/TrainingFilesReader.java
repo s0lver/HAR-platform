@@ -41,6 +41,6 @@ public class TrainingFilesReader {
         String[] slices = line.split(",");
         double mean = Double.valueOf(slices[1]);
         double stdDev = Double.valueOf(slices[2]);
-        return new ActivityPattern(activityType, mean, stdDev);
+        return new ActivityPattern(activityType, stdDev, mean);
     }
 }

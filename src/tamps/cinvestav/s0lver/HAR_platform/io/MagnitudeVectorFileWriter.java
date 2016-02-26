@@ -9,15 +9,12 @@ import java.io.PrintWriter;
 
 public class MagnitudeVectorFileWriter {
     private File vectorFile;
-    private double stdDev, mean;
     private double[] magnitudeVector;
     private int currentRun;
 
-    public MagnitudeVectorFileWriter(int currentRun, String filepath, double stdDev, double mean, double[] magnitudeVector) {
+    public MagnitudeVectorFileWriter(int currentRun, String filepath, double[] magnitudeVector) {
         this.vectorFile = new File(filepath);
         this.currentRun = currentRun;
-        this.stdDev = stdDev;
-        this.mean = mean;
         this.magnitudeVector = magnitudeVector;
     }
 
@@ -25,7 +22,6 @@ public class MagnitudeVectorFileWriter {
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(new FileWriter(vectorFile, true));
-            pw.println("# Run: " + currentRun + ", Mean: " + mean + ", StdDev: " + stdDev);
             for (double v : magnitudeVector) {
                 pw.println(currentRun + ", " + v);
             }
@@ -34,6 +30,5 @@ public class MagnitudeVectorFileWriter {
             e.printStackTrace();
             Log.e(this.getClass().getSimpleName(), "I could not write the magnitude vector file");
         }
-
     }
 }
