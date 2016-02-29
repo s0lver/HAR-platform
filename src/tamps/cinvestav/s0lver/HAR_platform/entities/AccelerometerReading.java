@@ -2,6 +2,9 @@ package tamps.cinvestav.s0lver.HAR_platform.entities;
 
 import java.util.Date;
 
+/***
+ * Represents a record of an accelerometer sample
+ */
 public class AccelerometerReading {
     private float x, y, z;
 

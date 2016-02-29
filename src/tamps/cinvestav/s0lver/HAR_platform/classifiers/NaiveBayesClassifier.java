@@ -2,20 +2,20 @@ package tamps.cinvestav.s0lver.HAR_platform.classifiers;
 
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
+import tamps.cinvestav.s0lver.HAR_platform.utils.Constants;
 
 import java.util.ArrayList;
 
+/***
+ * Classifies a given pattern into a class, according to a NaiveBayesConfiguration training configuration
+ * @see NaiveBayesConfiguration
+ */
 public class NaiveBayesClassifier {
     private ArrayList<ActivityPattern> patterns;
-    private byte uniqueClasses;
     private NaiveBayesConfiguration nbConf;
 
     double[] pdfPerClass;
     double[] MAP;
-
-    int stdDevDimension = 0;
-    int meanDimension = 1;
-    int totalDimensions = 2;
 
     /***
      * Creates a Naive Bayes classifier using the specified training information
@@ -23,7 +23,6 @@ public class NaiveBayesClassifier {
      */
     public NaiveBayesClassifier(NaiveBayesConfiguration naiveBayesConfiguration) {
         this.nbConf = naiveBayesConfiguration;
-        this.uniqueClasses = 3;
     }
 
     /***
@@ -33,29 +32,30 @@ public class NaiveBayesClassifier {
      * @see tamps.cinvestav.s0lver.HAR_platform.activities.Activities
      */
     public byte classify(ActivityPattern pattern) {
-        double[][] probability = new double[totalDimensions][uniqueClasses];
+        double[][] probability = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASES];
         double[][] variancePerClass = nbConf.getVariancePerClass();
         double[][] meanPerClass = nbConf.getMeanPerClass();
         double[] probabilityPerClass = nbConf.getProbabilityPerClass();
 
-        pdfPerClass = new double[uniqueClasses];
-        MAP = new double[uniqueClasses];
+        pdfPerClass = new double[Constants.UNIQUE_CLASES];
+        MAP = new double[Constants.UNIQUE_CLASES];
 
-        for (int k = 0; k < uniqueClasses; k++) {
-            probability[stdDevDimension][k] =
-                    (1 / Math.sqrt(2 * Math.PI * variancePerClass[stdDevDimension][k]))
-                    * Math.exp(-(Math.pow(pattern.getStandardDeviation() - meanPerClass[stdDevDimension][k], 2)
-                    / (2 * variancePerClass[stdDevDimension][k])));
+        for (int k = 0; k < Constants.UNIQUE_CLASES; k++) {
+            probability[Constants.STD_DEV_DIMENSION][k] =
+                    (1 / Math.sqrt(2 * Math.PI * variancePerClass[Constants.STD_DEV_DIMENSION][k]))
+                    * Math.exp(-(Math.pow(pattern.getStandardDeviation() - meanPerClass[Constants.STD_DEV_DIMENSION][k], 2)
+                    / (2 * variancePerClass[Constants.STD_DEV_DIMENSION][k])));
 
-            probability[meanDimension][k] = (1 / Math.sqrt(2 * Math.PI * variancePerClass[meanDimension][k]))
-                    * Math.exp(-(Math.pow(pattern.getMean() - meanPerClass[meanDimension][k], 2)
-                    / (2 * variancePerClass[meanDimension][k])));
+            probability[Constants.MEAN_DIMENSION][k] =
+                    (1 / Math.sqrt(2 * Math.PI * variancePerClass[Constants.MEAN_DIMENSION][k]))
+                    * Math.exp(-(Math.pow(pattern.getMean() - meanPerClass[Constants.MEAN_DIMENSION][k], 2)
+                    / (2 * variancePerClass[Constants.MEAN_DIMENSION][k])));
 
-            pdfPerClass[k] = probability[stdDevDimension][k] * probability[meanDimension][k];
+            pdfPerClass[k] = probability[Constants.STD_DEV_DIMENSION][k] * probability[Constants.MEAN_DIMENSION][k];
             MAP[k] = probabilityPerClass[k] * pdfPerClass[k];
         }
 
-        for (int i = 0; i < uniqueClasses; i++) {
+        for (int i = 0; i < Constants.UNIQUE_CLASES; i++) {
             Log.i(this.getClass().getSimpleName(), "MAP[" + i + "] = " + MAP[i]);
         }
 

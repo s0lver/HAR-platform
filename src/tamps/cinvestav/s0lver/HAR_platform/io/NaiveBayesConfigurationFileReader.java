@@ -2,18 +2,17 @@ package tamps.cinvestav.s0lver.HAR_platform.io;
 
 import android.content.Context;
 import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesConfiguration;
+import tamps.cinvestav.s0lver.HAR_platform.utils.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class NaiveBayesConfigurationFileReader {
-    public static NaiveBayesConfiguration readFile(Context context, int uniqueClasses) throws IOException {
-        double[] probabilityPerClass = new double[uniqueClasses];
-        double[][] meanPerClass = new double[2][uniqueClasses];
-        double[][] variancePerClass = new double[2][uniqueClasses];
-
-        int stdDevDimension = 0, meanDimension = 1;
+    public static NaiveBayesConfiguration readFile(Context context) throws IOException {
+        double[] probabilityPerClass = new double[Constants.UNIQUE_CLASES];
+        double[][] meanPerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASES];
+        double[][] variancePerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASES];
 
         String filepath = "training-configuration.csv";
         BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(filepath)));
@@ -27,14 +26,14 @@ public class NaiveBayesConfigurationFileReader {
             // 2. Means
             line = reader.readLine();
             String[] slices = line.split(",");
-            meanPerClass[stdDevDimension][i] = Double.valueOf(slices[stdDevDimension]);
-            meanPerClass[meanDimension][i] = Double.valueOf(slices[meanDimension]);
+            meanPerClass[Constants.STD_DEV_DIMENSION][i] = Double.valueOf(slices[Constants.STD_DEV_DIMENSION]);
+            meanPerClass[Constants.MEAN_DIMENSION][i] = Double.valueOf(slices[Constants.MEAN_DIMENSION]);
 
-            // 3. Standard deviations
+            // 3. Variances
             line = reader.readLine();
             slices = line.split(",");
-            variancePerClass[stdDevDimension][i] = Double.valueOf(slices[stdDevDimension]);
-            variancePerClass[meanDimension][i] = Double.valueOf(slices[meanDimension]);
+            variancePerClass[Constants.STD_DEV_DIMENSION][i] = Double.valueOf(slices[Constants.STD_DEV_DIMENSION]);
+            variancePerClass[Constants.MEAN_DIMENSION][i] = Double.valueOf(slices[Constants.MEAN_DIMENSION]);
 
             line = reader.readLine();
             i++;

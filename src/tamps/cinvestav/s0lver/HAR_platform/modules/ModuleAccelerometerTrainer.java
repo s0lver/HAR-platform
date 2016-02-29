@@ -1,23 +1,31 @@
 package tamps.cinvestav.s0lver.HAR_platform.modules;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.activities.ActivityPattern;
 import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesConfiguration;
 import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesTrainer;
+import tamps.cinvestav.s0lver.HAR_platform.io.NaiveBayesConfigurationFileWriter;
 import tamps.cinvestav.s0lver.HAR_platform.io.TrainingFilesReader;
+import tamps.cinvestav.s0lver.HAR_platform.utils.Constants;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 /***
  * Module for training a Naive Bayes classifier.
  */
-public class ModuleTrainer {
+public class ModuleAccelerometerTrainer {
     private Context context;
-    private NaiveBayesTrainer naiveBayesTrainer;
+    private NaiveBayesConfiguration naiveBayesConfiguration;
 
-    public ModuleTrainer(Context context) {
+    /***
+     * Constructor
+     * @param context Context for accessing the assets folder
+     */
+    public ModuleAccelerometerTrainer(Context context) {
         this.context = context;
     }
 
@@ -32,19 +40,23 @@ public class ModuleTrainer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        naiveBayesTrainer = new NaiveBayesTrainer(patterns);
-        writeTrainingFile();
-        return naiveBayesTrainer.train();
+        NaiveBayesTrainer naiveBayesTrainer = new NaiveBayesTrainer(patterns);
+        naiveBayesConfiguration = naiveBayesTrainer.train();
+        writeNaiveBayesConfigFile();
+        return naiveBayesConfiguration;
     }
 
-    private void writeTrainingFile() {
-        // TODO perform actual file writing
+    /***
+     * Writes the result of the training into a file
+     */
+    private void writeNaiveBayesConfigFile() {
+        new NaiveBayesConfigurationFileWriter(naiveBayesConfiguration).writeFile();
         Log.i(this.getClass().getSimpleName(), "Training done!");
     }
 
     /***
      * Loads the patterns from the files
-     * @throws IOException
+     * @throws IOException When accessing the file
      */
     private ArrayList<ActivityPattern> loadPatternsFromFile() throws IOException {
         ArrayList<ActivityPattern> patterns = new ArrayList<>();

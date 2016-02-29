@@ -10,13 +10,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import tamps.cinvestav.s0lver.HAR_platform.activities.Activities;
-import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesConfiguration;
 import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesListener;
-import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleAccelerometerClassifier;
-import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleAccelerometerLogger;
-import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleTrainer;
+import tamps.cinvestav.s0lver.HAR_platform.hubs.AccelerometerHub;
 import tamps.cinvestav.s0lver.HAR_platform.utils.Constants;
 
+/***
+ * Testing activity
+ */
 public class MainActivity extends Activity {
     private MediaPlayer mediaPlayerOn;
     private MediaPlayer mediaPlayerOff;
@@ -24,9 +24,9 @@ public class MainActivity extends Activity {
     private MediaPlayer mediaPlayerWalking;
     private MediaPlayer mediaPlayerRunning;
 
-    private ModuleAccelerometerLogger reader;
-    private ModuleAccelerometerClassifier classifier;
+    AccelerometerHub accelerometerHub;
     private boolean readingInProgress;
+    private boolean classificationInProgress;
     private Spinner lstActivities;
 
     @Override
@@ -36,9 +36,12 @@ public class MainActivity extends Activity {
 
         prepareSoundPlayers();
         prepareSpinners();
-        this.classifier = new ModuleAccelerometerClassifier(getApplicationContext(), buildActivityDetector(), 5 * Constants.ONE_SECOND);
+        accelerometerHub = new AccelerometerHub(this);
     }
 
+    /***
+     * Configures the sound players
+     */
     private void prepareSoundPlayers() {
         mediaPlayerOn = MediaPlayer.create(getApplicationContext(), R.raw.notification_on);
         mediaPlayerOff = MediaPlayer.create(getApplicationContext(), R.raw.notification_off);
@@ -48,32 +51,56 @@ public class MainActivity extends Activity {
         mediaPlayerRunning = MediaPlayer.create(getApplicationContext(), R.raw.running);
     }
 
+    /***
+     * Called when the train naive bayes button is pressed
+     * @param view The origin of the event
+     */
     public void clickTrainNaiveBayes(View view) {
-        ModuleTrainer trainer = new ModuleTrainer(this);
-        NaiveBayesConfiguration train = trainer.train();
+        accelerometerHub.trainClassifier();
     }
 
+    /***
+     * Called when the start classification button is pressed
+     * @param view The origin of the event
+     */
     public void clickStartClassification(View view) {
-        classifier.startClassification();
+        mediaPlayerOn.start();
+        accelerometerHub.startClassification(buildActivityDetector());
+        classificationInProgress = true;
     }
 
+    /***
+     * Called when the stop classification button is pressed
+     * @param view The origin of the event
+     */
     public void clickStopClassification(View view) {
-        classifier.stopClassification();
+        accelerometerHub.stopClassification();
+        readingInProgress = false;
+        mediaPlayerOff.start();
     }
 
+    /***
+     * Called when the start collection-reading button is pressed.
+     * It first shows a small waiting box for giving time to user to wear phone properly.
+     * @param view The origin of the event
+     */
     public void clickStartCollection(View view) {
-        String selectedActivity = lstActivities.getSelectedItem().toString().toLowerCase();
-        reader = new ModuleAccelerometerLogger(getApplicationContext(), selectedActivity, 5 * Constants.ONE_SECOND);
-
         showWaitingBox();
     }
 
+    /***
+     * Starts the actual collection-reading of accelerometer data.
+     */
     private void startCollection() {
-        reader.startAccelerometerReadings();
+        String selectedActivity = lstActivities.getSelectedItem().toString().toLowerCase();
+        accelerometerHub.startDataCollection(selectedActivity);
         mediaPlayerOn.start();
         readingInProgress = true;
     }
 
+    /***
+     * Shows a waiting box, useful for giving time to user for putting phone on jeans pocket
+     */
     private void showWaitingBox() {
         ProgressDialog ringProgressDialog = ProgressDialog.show(MainActivity.this, "Please wait ...",	"Get ready ...", true);
         ringProgressDialog.setCancelable(false);
@@ -89,12 +116,17 @@ public class MainActivity extends Activity {
                 }
                 ringProgressDialog.dismiss();
                 startCollection();
+
             }
         }).start();
     }
 
+    /***
+     * Called when the stop collection-reading button is pressed
+     * @param view The origin of touch event
+     */
     public void clickStopCollection(View view) {
-        reader.stopAccelerometerReadings();
+        accelerometerHub.stopDataCollection();
         readingInProgress = false;
         mediaPlayerOff.start();
     }
@@ -102,7 +134,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (readingInProgress) reader.stopAccelerometerReadings();
+        if (readingInProgress) accelerometerHub.stopDataCollection();
+
+        if (classificationInProgress) accelerometerHub.stopClassification();
 
         mediaPlayerOn.reset();
         mediaPlayerOn.release();
@@ -122,10 +156,16 @@ public class MainActivity extends Activity {
         lstActivities.setAdapter(adapter);
     }
 
+    /***
+     * Returns an NaiveBayesListener that is invoked once a pattern has been classified.
+     * @return A NaiveBayesListener object
+     * @see NaiveBayesListener
+     */
     private NaiveBayesListener buildActivityDetector() {
         return new NaiveBayesListener() {
             @Override
             public void onClassifiedPattern(byte activityType) {
+                Log.i(MainActivity.this.getClass().getSimpleName(), "Recognized activity type is " + activityType);
                 switch (activityType) {
                     case Activities.STATIC:
                         mediaPlayerStatic.start();

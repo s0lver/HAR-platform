@@ -1,39 +1,71 @@
 package tamps.cinvestav.s0lver.HAR_platform.hubs;
 
+import android.content.Context;
+import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesConfiguration;
+import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesListener;
+import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleAccelerometerClassifier;
+import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleAccelerometerLogger;
+import tamps.cinvestav.s0lver.HAR_platform.modules.ModuleAccelerometerTrainer;
+import tamps.cinvestav.s0lver.HAR_platform.utils.Constants;
+
+/***
+ * Concentrates the full-set of operations available through the linear acceleration sensor
+ * @see ModuleAccelerometerLogger
+ * @see ModuleAccelerometerTrainer
+ * @see ModuleAccelerometerClassifier
+ */
 public class AccelerometerHub {
+    private Context context;
+    private ModuleAccelerometerLogger logger;
+    private ModuleAccelerometerClassifier classifier;
 
-    // This dude will only trigger the collection of data:
-    // A) Read from accelerometer
-    // B) Preprocess data (magnitude vector and stuff)
-    // C) Store records file
-    // D) Stores magVectors File
-    // E) Stores pattern files (type, stdDev, mean)
-    public void startDataCollection() {
-
+    /***
+     * Constructor
+     * @param context Context for passing to the different involved modules
+     */
+    public AccelerometerHub(Context context) {
+        this.context = context;
     }
 
-    // nThis dude will only stop the process created by the previous method
+    /***
+     * Starts the collection of data from the accelerometer
+     * @param activityType The type of the activity to be monitored
+     */
+    public void startDataCollection(String activityType) {
+        logger = new ModuleAccelerometerLogger(context, activityType, Constants.WINDOW_LENGTH);
+        logger.startAccelerometerReadings();
+    }
+
+    /***
+     * Stops the collection of data from the accelerometer
+     */
     public void stopDataCollection() {
-
+        logger.stopAccelerometerReadings();
     }
 
-    // This dude will trigger the classification of a naive bayes classifier
-    // It will read the pattern files
-    // It will store the configuration information in another file
-    public void trainClassifier() {
-
+    /***
+     * Performs a round of training using the training files located at the har-system folder
+     * @return A NaiveBayesConfiguration with the result of the training
+     */
+    public NaiveBayesConfiguration trainClassifier() {
+        ModuleAccelerometerTrainer trainer = new ModuleAccelerometerTrainer(context);
+        return trainer.train();
     }
 
-    // This dude will start the process of classification in a permanent loop
-    // A) Will read, as in startDataCollection, the accelerometer data
-    // B) Will load the learning information stored by trainClassifier
-    // C) Will classify each pattern (preprocessed acc data) acquired in A)
-    public void startClassification() {
-
+    /***
+     * Starts the classification of live data collected from the linear acceleration sensor
+     * @param naiveBayesListener A NaiveBayesListener for notifying the classification of a pattern
+     * @see NaiveBayesListener
+     */
+    public void startClassification(NaiveBayesListener naiveBayesListener) {
+        classifier = new ModuleAccelerometerClassifier(context, naiveBayesListener, Constants.WINDOW_LENGTH);
+        classifier.startClassification();
     }
 
-    // This dude will stop the task initiated by previous element.
+    /***
+     * Stops the classification of live data from the acceleration sensor
+     */
     public void stopClassification() {
-
+        classifier.stopClassification();
     }
 }

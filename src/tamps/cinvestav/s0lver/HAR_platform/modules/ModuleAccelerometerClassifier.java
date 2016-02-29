@@ -56,7 +56,7 @@ public class ModuleAccelerometerClassifier implements AccelerometerReadingListen
      */
     private void loadTrainingInformationFromFile(Context context) {
         try {
-            this.naiveBayesConfiguration = NaiveBayesConfigurationFileReader.readFile(context, Constants.UNIQUE_CLASES);
+            this.naiveBayesConfiguration = NaiveBayesConfigurationFileReader.readFile(context);
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(this.getClass().getSimpleName(), "Couldn't read the file, I have to go");
