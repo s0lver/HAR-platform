@@ -106,8 +106,8 @@ public class ModuleAccelerometerPreprocessor {
         magnitudeVector = new double[averagedSize];
         int i = 0;
 
-        for (AccelerometerReading average : samplingWindow) {
-            sum = (average.getX() * average.getX()) + (average.getY() * average.getY()) + (average.getZ() * average.getZ());
+        for (AccelerometerReading reading : samplingWindow) {
+            sum = (reading.getX() * reading.getX()) + (reading.getY() * reading.getY()) + (reading.getZ() * reading.getZ());
             magnitudeVector[i] = Math.sqrt(sum);
             i++;
         }
