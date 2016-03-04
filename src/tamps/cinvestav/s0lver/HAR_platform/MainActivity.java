@@ -9,10 +9,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import tamps.cinvestav.s0lver.HAR_platform.activities.Activities;
-import tamps.cinvestav.s0lver.HAR_platform.classifiers.NaiveBayesListener;
-import tamps.cinvestav.s0lver.HAR_platform.hubs.AccelerometerHub;
-import tamps.cinvestav.s0lver.HAR_platform.utils.Constants;
+import tamps.cinvestav.s0lver.HAR_platform.har.activities.Activities;
+import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
+import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
+import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 
 /***
  * Testing activity
