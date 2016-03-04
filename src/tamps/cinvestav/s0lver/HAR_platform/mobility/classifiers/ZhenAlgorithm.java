@@ -1,12 +1,12 @@
-package tamps.cinvestav.s0lver.HAR_platform.mobility.staypointdetector.classifiers;
+package tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers;
 
 import android.location.Location;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.staypointdetector.entities.StayPoint;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 
 import java.util.Date;
 
 /***
- * An implementation of the Zhen Algorithm for detecting staypoints.
+ * An implementation of the Zhen <b>Live</b> Algorithm for detecting staypoints.
  * This implementation does not use a buffer for queuing points, instead it only accumulates
  * the location (latitude, longitude) information for calculating the centroid.
  */
@@ -19,10 +19,11 @@ public class ZhenAlgorithm {
     private double distanceThreshold;
     private long minTimeThreshold;
 
+
     /***
-     * Constructor of the Zhen Live Sigma algorithm
-     * @param minTimeThreshold The minimum time for detecting a staypoint. In milliseconds
-     * @param distanceThreshold The distance for detecting a staypoint (minimum size of the geographical zone). In meters
+     * Constructor of the Zhen <b>Live</b> Sigma algorithm
+     * @param minTimeThreshold The minimum time for detecting a StayPoint. In milliseconds
+     * @param distanceThreshold The distance for detecting a StayPoint (minimum size of the geographical zone). In meters
      * @see StayPoint
      */
     public ZhenAlgorithm(long minTimeThreshold, double distanceThreshold) {
@@ -37,7 +38,7 @@ public class ZhenAlgorithm {
     /***
      * Processes the specified Location fix using the Zhen algorithm
      * @param fix The Location to be processed
-     * @return The stayopint if found, otherwise a null reference is returned
+     * @return The StayPoint if found, otherwise a null reference is returned
      * @see StayPoint
      * @see Location
      */

@@ -12,7 +12,6 @@ import tamps.cinvestav.s0lver.HAR_platform.har.entities.AccelerometerReading;
 import tamps.cinvestav.s0lver.HAR_platform.har.hal.AccelerometerReader;
 import tamps.cinvestav.s0lver.HAR_platform.har.hal.AccelerometerReadingListener;
 import tamps.cinvestav.s0lver.HAR_platform.har.io.NaiveBayesConfigurationFileReader;
-import tamps.cinvestav.s0lver.HAR_platform.har.io.PatternsFileWriter;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 
 import java.io.File;
@@ -23,8 +22,8 @@ import java.util.Date;
 /***
  * Class for requesting readings of accelerometer data and logging them to file
  * @see AccelerometerReading
- * @see tamps.cinvestav.s0lver.HAR_platform.hal.AccelerometerReader
- * @see tamps.cinvestav.s0lver.HAR_platform.hal.AccelerometerReadingListener
+ * @see AccelerometerReader
+ * @see AccelerometerReadingListener
  */
 public class ModuleAccelerometerClassifier implements AccelerometerReadingListener {
     private Date startTime;
@@ -101,8 +100,8 @@ public class ModuleAccelerometerClassifier implements AccelerometerReadingListen
                 String filepath = Environment.getExternalStorageDirectory() + File.separator + "har-system" +
                         File.separator + filePrefix + Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
 
-                PatternsFileWriter writer = new PatternsFileWriter(filepath, pattern);
-                writer.writeFile();
+//                PatternsFileWriter writer = new PatternsFileWriter(filepath, pattern);
+//                writer.writeFile();
                 naiveBayesListener.onClassifiedPattern(predictedActivityType);
             }
         }).start();

@@ -1,4 +1,4 @@
-package tamps.cinvestav.s0lver.HAR_platform.mobility.staypointdetector.entities;
+package tamps.cinvestav.s0lver.HAR_platform.mobility.entities;
 
 import android.location.Location;
 
@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+/***
+ * Models a StayPoint, which is a geographical region of a determined size, where the user spents a given amount of time.
+ * It is also known as a frequent location, place-point of interest (POI).
+ */
 public class StayPoint{
     private float latitude;
     private float longitude;
@@ -25,36 +29,49 @@ public class StayPoint{
         this.amountFixesInvolved = amountFixesInvolved;
     }
 
+    /***
+     * Builds a stay point from the i to j positions of the given list of Locations
+     * @param list    An ArrayList of locations
+     * @param i       The initial fix to consider
+     * @param j       The last fix to consider
+     * @return A StayPoint calculated from the specified parameters.
+     * @throws RuntimeException If the portion of the list is not valid
+     */
     public static StayPoint createStayPoint(ArrayList<Location> list, int i, int j) {
-        int sizeOfListPortion = j - i + 1;
+        int amountFixes = j - i + 1;
 
-        if (sizeOfListPortion == 0) {
+        if (amountFixes == 0) {
             throw new RuntimeException("List provided is empty");
         }
 
-        double sumLat = 0.0, sumLng = 0.0;
+        double sigmaLatitude = 0.0, sigmaLongitude = 0.0;
         for (int h = i; h <= j; h++) {
-            sumLat += list.get(h).getLatitude();
-            sumLng += list.get(h).getLongitude();
+            sigmaLatitude += list.get(h).getLatitude();
+            sigmaLongitude += list.get(h).getLongitude();
         }
 
-        StayPoint pointOfInterest = new StayPoint();
-        pointOfInterest.setLatitude((float) (sumLat / sizeOfListPortion));
-        pointOfInterest.setLongitude((float) (sumLng / sizeOfListPortion));
-        pointOfInterest.setArrivalTime(new Date(list.get(i).getTime()));
-        pointOfInterest.setDepartureTime(new Date(list.get(j).getTime()));
-        pointOfInterest.setAmountFixesInvolved(sizeOfListPortion);
+        Date arrivalTime = new Date(list.get(i).getTime());
+        Date departureTime = new Date(list.get(j).getTime());
 
-        return pointOfInterest;
+        return createStayPoint(sigmaLatitude, sigmaLongitude, arrivalTime, departureTime, amountFixes);
     }
 
+    /***
+     * Builds a StayPoint from the accumulated data
+     * @param sigmaLatitude     The sum of the latitude values of a list of locations
+     * @param sigmaLongitude    The sum of the longitude values of a list of locations
+     * @param arrivalTime       The timestamp of the first Location object
+     * @param departureTime     The timestamp of the last location object
+     * @param amountFixes       The size of the list of locations
+     * @return A StayPoint build from the specified parameters
+     */
     public static StayPoint createStayPoint(double sigmaLatitude, double sigmaLongitude, Date arrivalTime, Date departureTime, int amountFixes) {
         StayPoint stayPoint = new StayPoint();
-        stayPoint.setAmountFixesInvolved(amountFixes);
         stayPoint.setLatitude((float) (sigmaLatitude / amountFixes));
         stayPoint.setLongitude((float) (sigmaLongitude / amountFixes));
         stayPoint.setArrivalTime(arrivalTime);
         stayPoint.setDepartureTime(departureTime);
+        stayPoint.setAmountFixesInvolved(amountFixes);
 
         return stayPoint;
     }
@@ -109,5 +126,19 @@ public class StayPoint{
         return String.format("%f,%f,%s,%s,%d", getLatitude(), getLongitude(),
                 sdf.format(getArrivalTime()), sdf.format(getDepartureTime()),
                 getAmountFixesInvolved());
+    }
+
+    /***
+     * Converts the StayPoint to a Location object.
+     * @return A Location instance geographically equivalent to the StayPoint
+     * @see Location
+     */
+    public Location convertStayPointToLocation() {
+        Location location = new Location("Custom");
+        location.setLatitude(this.getLatitude());
+        location.setLongitude(this.getLongitude());
+        location.setTime(this.getArrivalTime().getTime());
+
+        return location;
     }
 }
