@@ -12,8 +12,8 @@ import java.util.Locale;
  * It is also known as a frequent location, place-point of interest (POI).
  */
 public class StayPoint{
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
     private Date arrivalTime;
     private Date departureTime;
     private int amountFixesInvolved;
@@ -21,7 +21,7 @@ public class StayPoint{
 
     private StayPoint(){}
 
-    public StayPoint(float latitude, float longitude, Date arrivalTime, Date departureTime, int amountFixesInvolved) {
+    public StayPoint(double latitude, double longitude, Date arrivalTime, Date departureTime, int amountFixesInvolved) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.arrivalTime = arrivalTime;
@@ -76,19 +76,19 @@ public class StayPoint{
         return stayPoint;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 

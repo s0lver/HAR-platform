@@ -1,16 +1,22 @@
 package tamps.cinvestav.s0lver.HAR_platform.mobility.repository;
 
+import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.LocationAnalyzer;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.StayPointsDal;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 
 import java.util.ArrayList;
 
 public class StayPointRepository {
     private double minimumDistanceThreshold;
+    private StayPointsDal stayPointsDal;
 
-    public StayPointRepository(double minimumDistanceThreshold) {
+    public StayPointRepository(Context context, double minimumDistanceThreshold) {
         this.minimumDistanceThreshold = minimumDistanceThreshold;
+        stayPointsDal = new StayPointsDal(context);
     }
 
     public boolean contains(StayPoint stayPoint) {
@@ -23,16 +29,35 @@ public class StayPointRepository {
 
     /***
      * This is our "onStayPointDetected(StayPoint stayPoint)"
-     * @param newStayPoint
-     * @return
+     * @param stayPoint The StayPoint to add.
+     * @return true if the StayPoint <b>doesn't exist</b> and can be added to the repository. False otherwise.
      */
-    public boolean addOrUpdate(StayPoint newStayPoint) {
-        // If exists, then update metadata and return false, otherwhise try it and return true
-        throw new RuntimeException("Not implemented yet");
+    public boolean add(StayPoint stayPoint) {
+        if (contains(stayPoint)) {
+            Log.w(this.getClass().getSimpleName(), "The StayPoint already exists, can't add it");
+            return false;
+        }
+        else{
+            Log.i(this.getClass().getSimpleName(), "The StayPoint didn't exist, proceeding to add it");
+            stayPointsDal.addStayPoint(stayPoint);
+            return true;
+        }
+    }
+
+    public boolean update(StayPoint stayPoint) {
+        if (contains(stayPoint)) {
+            Log.i(this.getClass().getSimpleName(), "Updating metadata...");
+            updateMetadata(stayPoint);
+            return true;
+        }
+        else{
+            Log.w(this.getClass().getSimpleName(), "Can't modify stayPoint because it doesn't exist in the repository");
+            return false;
+        }
     }
 
     private void updateMetadata(StayPoint stayPoint) {
-        throw new RuntimeException("Not implemented yet");
+        // TODO get the math for updating
     }
 
     /***
@@ -41,6 +66,13 @@ public class StayPointRepository {
      * @see StayPoint
      */
     public ArrayList<StayPoint> getAllStayPoints() {
-        throw new RuntimeException("Not implemented yet");
+        ArrayList<StayPoint> stayPoints = new ArrayList<>();
+
+        ArrayList<DbStayPoint> dbStayPoints = stayPointsDal.getAllStayPoints();
+        for (DbStayPoint dbStayPoint : dbStayPoints) {
+            stayPoints.add(dbStayPoint.getStayPoint());
+        }
+
+        return stayPoints;
     }
 }

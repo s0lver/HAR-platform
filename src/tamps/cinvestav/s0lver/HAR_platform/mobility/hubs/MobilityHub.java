@@ -24,8 +24,8 @@ public class MobilityHub {
 
     public MobilityHub(Context context, long minimumTimeThreshold, double minimumDistanceParameter) {
         this.locationReader = new LocationReader(context, new LocalLocationListener());
-        this.stayPointDetector = new StayPointDetector(minimumTimeThreshold, minimumDistanceParameter);
-        this.geoFencing = new GeoFencing(minimumDistanceParameter, buildMobilityListener());
+        this.stayPointDetector = new StayPointDetector(context, minimumTimeThreshold, minimumDistanceParameter);
+        this.geoFencing = new GeoFencing(context, minimumDistanceParameter, buildMobilityListener());
         this.locationLogger = new LocationLogger(context);
     }
 

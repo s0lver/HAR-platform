@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,10 @@ import tamps.cinvestav.s0lver.HAR_platform.har.activities.Activities;
 import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
 import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointRepository;
+
+import java.util.Date;
 
 /***
  * Testing activity
@@ -181,5 +186,12 @@ public class MainActivity extends Activity {
                 }
             }
         };
+    }
+
+    public void clickDoStuffWithDb(View view) {
+        StayPointRepository repository = new StayPointRepository(this, 500);
+        StayPoint stayPoint = new StayPoint(23.7205693, -99.0777659, new Date(System.currentTimeMillis() - (3600 * 1000)), new Date(SystemClock.currentThreadTimeMillis()), 0);
+
+        boolean added = repository.add(stayPoint);
     }
 }

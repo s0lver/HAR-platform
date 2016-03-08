@@ -1,5 +1,6 @@
 package tamps.cinvestav.s0lver.HAR_platform.mobility.modules;
 
+import android.content.Context;
 import android.location.Location;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.MobilityListener;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.LocationAnalyzer;
@@ -20,12 +21,14 @@ public class GeoFencing {
 
     /***
      * Constructor
+     *
+     * @param context                     The context for creating and accessing to the StayPoint repository
      * @param minimumDistanceParameter    The minimum distance parameter for geo-fencing analysis
      * @param mobilityListener            The MobilityListener for reporting mobility changes to.
      * @see MobilityListener
      */
-    public GeoFencing(double minimumDistanceParameter, MobilityListener mobilityListener) {
-        this.stayPointRepository = new StayPointRepository(minimumDistanceParameter);
+    public GeoFencing(Context context, double minimumDistanceParameter, MobilityListener mobilityListener) {
+        this.stayPointRepository = new StayPointRepository(context, minimumDistanceParameter);
         this.minDistanceParameter = minimumDistanceParameter;
         this.mobilityListener = mobilityListener;
         this.isUserAtStayPoint = false;
