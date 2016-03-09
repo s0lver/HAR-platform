@@ -15,8 +15,11 @@ import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
 import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.hubs.MobilityHub;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointRepository;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /***
@@ -34,6 +37,8 @@ public class MainActivity extends Activity {
     private boolean classificationInProgress;
     private Spinner lstActivities;
 
+    MobilityHub mobilityHub;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,7 @@ public class MainActivity extends Activity {
         prepareSoundPlayers();
         prepareSpinners();
         accelerometerHub = new AccelerometerHub(this);
+        mobilityHub = new MobilityHub(this, Constants.ONE_SECOND * 45, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER);
     }
 
     /***
@@ -189,9 +195,47 @@ public class MainActivity extends Activity {
     }
 
     public void clickDoStuffWithDb(View view) {
+//        simulateAdd();
+        clearStayPointsTable();
+//        recreateDatabase();
+        showAllStayPoints();
+    }
+
+    private void recreateDatabase() {
+        StayPointRepository repository = new StayPointRepository(this, 500);
+        repository.getStayPointsDal().recreateDatabase();
+    }
+
+    private void showAllStayPoints() {
+        StayPointRepository repository = new StayPointRepository(this, 500);
+        ArrayList<DbStayPoint> stayPoints = repository.getStayPointsDal().getAll();
+        for (DbStayPoint stayPoint : stayPoints) {
+            Log.i(this.getClass().getSimpleName(), stayPoint.toString());
+        }
+    }
+
+    private void simulateAdd() {
         StayPointRepository repository = new StayPointRepository(this, 500);
         StayPoint stayPoint = new StayPoint(23.7205693, -99.0777659, new Date(System.currentTimeMillis() - (3600 * 1000)), new Date(SystemClock.currentThreadTimeMillis()), 0);
+//        boolean added = repository.add(stayPoint);
+        DbStayPoint addedStayPoint = repository.getStayPointsDal().add(stayPoint);
+        Log.i(this.getClass().getSimpleName(), "Added: " + addedStayPoint);
+        addedStayPoint.setVisitCount(addedStayPoint.getVisitCount() + 1);
+        DbStayPoint updatedStayPoint = repository.getStayPointsDal().update(addedStayPoint);
+        Log.i(this.getClass().getSimpleName(), "Modified: " + addedStayPoint);
 
-        boolean added = repository.add(stayPoint);
+    }
+
+    private void clearStayPointsTable() {
+        StayPointRepository repository = new StayPointRepository(this, 500);
+        repository.getStayPointsDal().clearTableStayPoints();
+    }
+
+    private void clickStartMobilityTracker(View view) {
+        mobilityHub.startMobilityTracking();
+    }
+
+    private void clickStopMobilityTracker(View view) {
+        mobilityHub.stopMobilityTracking();
     }
 }

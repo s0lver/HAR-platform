@@ -17,18 +17,19 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LONGITUDE = "longitude";
     public static final String COLUMN_ARRIVAL_TIME = "arrivalTime";
     public static final String COLUMN_DEPARTURE_TIME = "departureTime";
+    public static final String COLUMN_VISIT_COUNT = "visitCount";
 
     private static final String DATABASE_NAME = "mobility.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_CREATE = "create table " + TABLE_STAY_POINTS
             + "(" + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_LATITUDE + " decimal not null,"
-            + COLUMN_LONGITUDE + " decimal not null,"
-            + COLUMN_ARRIVAL_TIME + " text not null,"
-            + COLUMN_DEPARTURE_TIME + " text not null"
+            + COLUMN_LATITUDE + " decimal not null, "
+            + COLUMN_LONGITUDE + " decimal not null, "
+            + COLUMN_ARRIVAL_TIME + " text not null, "
+            + COLUMN_DEPARTURE_TIME + " text not null, "
+            + COLUMN_VISIT_COUNT + " integer not null"
             + ");";
-
 
     public SQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,4 +49,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void clearTableStayPoints(SQLiteDatabase database) {
+        String clearTableQuery = "DELETE FROM " + SQLiteHelper.TABLE_STAY_POINTS;
+        database.execSQL(clearTableQuery);
+    }
+
+    public void recreateDatabase(SQLiteDatabase database) {
+//        String recreateDBQuery = "DROP TABLE " + SQLiteHelper.TABLE_STAY_POINTS;
+//        database.execSQL(recreateDBQuery);
+        onCreate(database);
+    }
 }

@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:text="Start collection"
             android:id="@+id/btnStartCollection" android:layout_gravity="center_horizontal"
+            android:enabled="false"
             android:onClick="clickStartCollection" android:layout_marginTop="20dp"/>
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -32,6 +33,7 @@
             android:layout_height="wrap_content"
             android:text="Stop collection"
             android:id="@+id/btnStopCollection" android:layout_gravity="center_horizontal"
+            android:enabled="false"
             android:onClick="clickStopCollection"/>
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -39,6 +41,7 @@
             android:layout_height="wrap_content"
             android:text="Train Naive Bayes"
             android:id="@+id/btnTrainNaiveBayes" android:layout_gravity="center_horizontal"
+            android:enabled="false"
             android:onClick="clickTrainNaiveBayes"/>
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -46,6 +49,7 @@
             android:layout_height="wrap_content"
             android:text="Start classification"
             android:id="@+id/btnStartClassification" android:layout_gravity="center_horizontal"
+            android:enabled="false"
             android:onClick="clickStartClassification"/>
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -53,6 +57,7 @@
             android:layout_height="wrap_content"
             android:text="Stop classification"
             android:id="@+id/btnStopClassification" android:layout_gravity="center_horizontal"
+            android:enabled="false"
             android:onClick="clickStopClassification"/>
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -60,6 +65,21 @@
             android:layout_height="wrap_content"
             android:text="Do stuff with DB"
             android:id="@+id/btnClickStuff" android:layout_gravity="center_horizontal"
+            android:enabled="false"
             android:onClick="clickDoStuffWithDb"/>
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Mobility Tracker"
+            android:id="@+id/btnClickStartMobilityTracker" android:layout_gravity="center_horizontal"
+            android:onClick="clickStartMobilityTracker"/>
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Mobility Tracker"
+            android:id="@+id/btnClickStopMobilityTracker" android:layout_gravity="center_horizontal"
+            android:onClick="clickStopMobilityTracker"/>
 </LinearLayout>
 

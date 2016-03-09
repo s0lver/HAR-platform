@@ -63,7 +63,7 @@ public class LocationAnalyzer {
             Location spAsLocation = stayPoint.convertStayPointToLocation();
             float distance = location.distanceTo(spAsLocation);
 
-            if (distance < closestDistance) {
+            if (distance <= closestDistance) {
                 closestDistance = distance;
                 closestStayPoint = stayPoint;
             }

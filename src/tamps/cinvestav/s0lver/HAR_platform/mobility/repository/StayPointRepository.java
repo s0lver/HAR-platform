@@ -12,6 +12,11 @@ import java.util.ArrayList;
 
 public class StayPointRepository {
     private double minimumDistanceThreshold;
+
+    public StayPointsDal getStayPointsDal() {
+        return stayPointsDal;
+    }
+
     private StayPointsDal stayPointsDal;
 
     public StayPointRepository(Context context, double minimumDistanceThreshold) {
@@ -39,15 +44,15 @@ public class StayPointRepository {
         }
         else{
             Log.i(this.getClass().getSimpleName(), "The StayPoint didn't exist, proceeding to add it");
-            stayPointsDal.addStayPoint(stayPoint);
+            stayPointsDal.add(stayPoint);
             return true;
         }
     }
 
-    public boolean update(StayPoint stayPoint) {
-        if (contains(stayPoint)) {
+    public boolean update(DbStayPoint dbStayPoint) {
+        if (contains(dbStayPoint.getStayPoint())) {
             Log.i(this.getClass().getSimpleName(), "Updating metadata...");
-            updateMetadata(stayPoint);
+            updateMetadata(dbStayPoint);
             return true;
         }
         else{
@@ -56,8 +61,9 @@ public class StayPointRepository {
         }
     }
 
-    private void updateMetadata(StayPoint stayPoint) {
-        // TODO get the math for updating
+    private void updateMetadata(DbStayPoint stayPoint) {
+        stayPoint.setVisitCount(stayPoint.getVisitCount() + 1);
+        DbStayPoint updatedDbStayPoint = stayPointsDal.update(stayPoint);
     }
 
     /***
@@ -68,7 +74,7 @@ public class StayPointRepository {
     public ArrayList<StayPoint> getAllStayPoints() {
         ArrayList<StayPoint> stayPoints = new ArrayList<>();
 
-        ArrayList<DbStayPoint> dbStayPoints = stayPointsDal.getAllStayPoints();
+        ArrayList<DbStayPoint> dbStayPoints = stayPointsDal.getAll();
         for (DbStayPoint dbStayPoint : dbStayPoints) {
             stayPoints.add(dbStayPoint.getStayPoint());
         }

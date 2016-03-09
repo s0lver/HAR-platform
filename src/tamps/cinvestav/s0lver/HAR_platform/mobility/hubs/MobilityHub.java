@@ -5,6 +5,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
+import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.MobilityListener;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.StayPointListener;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
@@ -19,6 +21,7 @@ public class MobilityHub {
     private LocationReader locationReader;
     private StayPointDetector stayPointDetector;
     private GeoFencing geoFencing;
+    private AccelerometerHub accelerometerHub;
 
     private LocationLogger locationLogger;
 
@@ -27,6 +30,7 @@ public class MobilityHub {
         this.stayPointDetector = new StayPointDetector(context, minimumTimeThreshold, minimumDistanceParameter);
         this.geoFencing = new GeoFencing(context, minimumDistanceParameter, buildMobilityListener());
         this.locationLogger = new LocationLogger(context);
+        this.accelerometerHub = new AccelerometerHub(context);
     }
 
     public void startLocationsLogging() {
@@ -53,12 +57,22 @@ public class MobilityHub {
                 Log.i(this.getClass().getSimpleName(), "User is arriving at a StayPoint");
                 // TODO define a mechanism for defining how many times to invoke and how to stop the HAR system
                 Log.i(this.getClass().getSimpleName(), "Starting HAR module");
+                accelerometerHub.startClassification(buildNaiveBayesListener());
             }
 
             @Override
             public void onUserLeavingStayPoint(Date timeOfDeparture) {
                 Log.i(this.getClass().getSimpleName(), "User is leaving a StayPoint");
                 Log.i(this.getClass().getSimpleName(), "Stopping HAR module");
+            }
+        };
+    }
+
+    private NaiveBayesListener buildNaiveBayesListener() {
+        return new NaiveBayesListener() {
+            @Override
+            public void onClassifiedPattern(byte predictedActivityType) {
+                // TODO work from here, launch the counting-voting of the activity and work for saving such information on db
             }
         };
     }
