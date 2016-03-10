@@ -24,7 +24,7 @@ public class ModuleAccelerometerLogger implements AccelerometerReadingListener {
     private String activityType;
     private Date startTime;
     private AccelerometerReader accelerometerReader;
-    private int sizeOfWindow;
+    private long sizeOfWindow;
 
     /***
      * Creates a ModuleAccelerometerLogger instance with the specified window size
@@ -32,7 +32,7 @@ public class ModuleAccelerometerLogger implements AccelerometerReadingListener {
      * @param activityType Type of activity (for filename)
      * @param sizeOfWindow The size of the window on which data will be allocated, this is in millisecods
      */
-    public ModuleAccelerometerLogger(Context context, String activityType, int sizeOfWindow) {
+    public ModuleAccelerometerLogger(Context context, String activityType, long sizeOfWindow) {
         this.activityType = activityType;
         this.sizeOfWindow = sizeOfWindow;
         this.currentRun = 1;

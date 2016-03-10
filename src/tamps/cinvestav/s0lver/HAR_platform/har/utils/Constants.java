@@ -10,7 +10,12 @@ public class Constants {
     /***
      * I.e., one second in milliseconds
      */
-    public static final int ONE_SECOND = 1000;
+    public static final long ONE_SECOND = 1000;
+
+    /***
+     * One minute in milliseconds
+     */
+    public static final long ONE_MINUTE = ONE_SECOND * 60;
 
     /***
      * Standard date format for output of data (for instance, in file names).
@@ -45,5 +50,5 @@ public class Constants {
     /***
      * Length of the accelerometer data window to be analyzed
      */
-    public static final int WINDOW_LENGTH = 5 * ONE_SECOND;
+    public static final long WINDOW_LENGTH = 5 * ONE_SECOND;
 }

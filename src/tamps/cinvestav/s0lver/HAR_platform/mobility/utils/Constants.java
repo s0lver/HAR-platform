@@ -7,6 +7,17 @@ import java.util.Locale;
  * Constants employed overall the mobility hub
  */
 public class Constants {
+
+    /***
+     * I.e., one second in milliseconds
+     */
+    public static final long ONE_SECOND = 1000;
+
+    /***
+     * One minute in milliseconds
+     */
+    public static final long ONE_MINUTE = ONE_SECOND * 60;
+
     /***
      * The minimum distance (size) of the geographical area to be considered a StayPoint
      */

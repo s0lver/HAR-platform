@@ -22,7 +22,7 @@ public class ModuleAccelerometerPreprocessor {
     private double mean;
     private double stdDev;
 
-    private final int sizeOfWindow;
+    private final long sizeOfWindow;
     private final int subSamplingWindowSize;
     private final String activityType;
 
@@ -30,7 +30,7 @@ public class ModuleAccelerometerPreprocessor {
 
     public ModuleAccelerometerPreprocessor(ArrayList<AccelerometerReading> samplingWindow,
                                            String activityType,
-                                           int sizeOfWindow,
+                                           long sizeOfWindow,
                                            int subSamplingWindowSize,
                                            Date startTime) {
         this.activityType = activityType;

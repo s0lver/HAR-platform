@@ -35,7 +35,7 @@ public class StayPointVisitsRepository {
     public DbStayPointVisit updateVisitInformation(DbStayPointVisit visit) {
         ActivitiesInStayPointDal activitiesDal = new ActivitiesInStayPointDal(context);
 
-        visit.setDepartureTime(new Date(System.currentTimeMillis()));
+//        visit.setDepartureTime(new Date(System.currentTimeMillis()));
 
         ArrayList<DbActivityInStayPoint> activities = activitiesDal.getAllByVisit(visit.getId());
 
@@ -62,5 +62,4 @@ public class StayPointVisitsRepository {
         visit = visitsDal.update(visit);
         return visit;
     }
-
 }

@@ -28,7 +28,7 @@ import java.util.Date;
 public class ModuleAccelerometerClassifier implements AccelerometerReadingListener {
     private Date startTime;
     private AccelerometerReader accelerometerReader;
-    private int sizeOfWindow;
+    private long sizeOfWindow;
     private NaiveBayesConfiguration naiveBayesConfiguration;
     private NaiveBayesListener naiveBayesListener;
 
@@ -40,7 +40,7 @@ public class ModuleAccelerometerClassifier implements AccelerometerReadingListen
      * @param naiveBayesListener      The listener to call after classifying an ActivityPattern
      * @param sizeOfWindow            The size of the window on which data will be allocated, in milliseconds
      */
-    public ModuleAccelerometerClassifier(Context context, NaiveBayesListener naiveBayesListener, int sizeOfWindow) {
+    public ModuleAccelerometerClassifier(Context context, NaiveBayesListener naiveBayesListener, long sizeOfWindow) {
         this.sizeOfWindow = sizeOfWindow;
         this.startTime = new Date(System.currentTimeMillis());
 

@@ -21,10 +21,10 @@ public class AccelerometerReader implements SensorEventListener{
     private ArrayList<AccelerometerReading> buffer;
     private Timer timerReadings;
     private TimerTask timerTaskReading;
-    private int sizeOfWindow;
+    private long sizeOfWindow;
     AccelerometerReadingListener readingListener;
 
-    public AccelerometerReader(Context context, AccelerometerReadingListener readingListener, int sizeOfWindow) {
+    public AccelerometerReader(Context context, AccelerometerReadingListener readingListener, long sizeOfWindow) {
         this.readingListener = readingListener;
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);

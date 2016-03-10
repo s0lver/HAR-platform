@@ -4,35 +4,24 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.util.Log;
-import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
-import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.MobilityListener;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.StayPointListener;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.hal.LocationReader;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.GeoFencing;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.LocationLogger;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.StayPointDetector;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbActivityInStayPoint;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
-
-import java.util.Date;
 
 public class MobilityHub {
     private LocationReader locationReader;
     private StayPointDetector stayPointDetector;
     private GeoFencing geoFencing;
-    private AccelerometerHub accelerometerHub;
-
     private LocationLogger locationLogger;
 
     public MobilityHub(Context context, long minimumTimeThreshold, double minimumDistanceParameter) {
         this.locationReader = new LocationReader(context, new LocalLocationListener());
         this.stayPointDetector = new StayPointDetector(context, minimumTimeThreshold, minimumDistanceParameter);
-        this.geoFencing = new GeoFencing(context, minimumDistanceParameter, buildMobilityListener());
+        this.geoFencing = new GeoFencing(context, minimumDistanceParameter);
         this.locationLogger = new LocationLogger(context);
-        this.accelerometerHub = new AccelerometerHub(context);
     }
 
     public void startLocationsLogging() {
@@ -50,35 +39,6 @@ public class MobilityHub {
     public void stopMobilityTracking() {
         locationReader.stopReadings();
         stayPointDetector.analyzeLastPart();
-    }
-
-    private MobilityListener buildMobilityListener() {
-        return new MobilityListener() {
-            @Override
-            public void onUserArrivingStayPoint(DbStayPoint dbStayPoint, Date timeOfArrivalDetected) {
-                Log.i(this.getClass().getSimpleName(), "User is arriving at a StayPoint");
-                // TODO define a mechanism for defining how many times to invoke and how to stop the HAR system
-                Log.i(this.getClass().getSimpleName(), "Starting HAR module");
-                accelerometerHub.startClassification(buildNaiveBayesListener());
-            }
-
-            @Override
-            public void onUserLeavingStayPoint(Date timeOfDeparture) {
-                Log.i(this.getClass().getSimpleName(), "User is leaving a StayPoint");
-                Log.i(this.getClass().getSimpleName(), "Stopping HAR module");
-            }
-        };
-    }
-
-    private NaiveBayesListener buildNaiveBayesListener() {
-        return new NaiveBayesListener() {
-            @Override
-            public void onClassifiedPattern(byte predictedActivityType) {
-                // TODO complete here
-                // 1 Create a DbActivityInStayPoint object with current Time
-                // DbActivityInStayPoint activity = new DbActivityInStayPoint(0, geoFencing.getCurrentVisit(), predictedActivityType, new Date(System.currentTimeMillis()));
-            }
-        };
     }
 
     private StayPointListener buildStayPointListener() {

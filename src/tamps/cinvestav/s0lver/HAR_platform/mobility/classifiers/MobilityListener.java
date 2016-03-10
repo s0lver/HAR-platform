@@ -12,17 +12,18 @@ import java.util.Date;
 public interface MobilityListener {
     /***
      * Triggered when the user is arriving a StayPoint
-     * @param dbStayPoint The DbStayPoint to where the user has arrived
-     * @param timeOfArrivalDetected The time on which the arrival was detected (might not coincide with
+     * @param stayPoint The DbStayPoint to where the user has arrived
+     * @param timeOfArrival The time on which the arrival was detected (might not coincide with
      *                              the stored information of the StayPoint)
      * @see DbStayPoint
      */
-    void onUserArrivingStayPoint(DbStayPoint dbStayPoint, Date timeOfArrivalDetected);
+    void onUserArrivingStayPoint(DbStayPoint stayPoint, Date timeOfArrival);
 
     /***
      * Triggered when the user leaves a StayPoint
+     * @param stayPoint The DbStayPoint that the user is leaving
      * @param timeOfDeparture The time on which the departure was detected (might not coincide with
      *                        the stored information of the StayPoint)
      */
-    void onUserLeavingStayPoint(Date timeOfDeparture);
+    void onUserLeavingStayPoint(DbStayPoint stayPoint, Date timeOfDeparture);
 }
