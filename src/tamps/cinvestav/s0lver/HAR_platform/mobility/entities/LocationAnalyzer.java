@@ -1,6 +1,7 @@
 package tamps.cinvestav.s0lver.HAR_platform.mobility.entities;
 
 import android.location.Location;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants;
 
 import java.util.ArrayList;
@@ -49,23 +50,23 @@ public class LocationAnalyzer {
     }
 
     /***
-     * Finds the closest StayPoint to the given Location and within the minimumDistanceThreshold.
+     * Finds the closest DbStayPoint to the given Location and within the minimumDistanceThreshold.
      * @param location The location to test against all learned StayPoints
-     * @param stayPoints The list of stayPoints on which the nearest StayPoint should be found
+     * @param dbStayPoints The list of stayPoints on which the nearest StayPoint should be found
      * @param minimumDistanceThreshold The ratio to find the closest StayPoint
      * @return The closest StayPoint to the given Location, null if no StayPoint within the minDistanceParameter ratio is found.
      * @see Location
      */
-    public static StayPoint findClosestStayPoint(Location location, ArrayList<StayPoint> stayPoints, double minimumDistanceThreshold) {
-        StayPoint closestStayPoint = null;
+    public static DbStayPoint findClosestStayPoint(Location location, ArrayList<DbStayPoint> dbStayPoints, double minimumDistanceThreshold) {
+        DbStayPoint closestStayPoint = null;
         double closestDistance = 0;
-        for (StayPoint stayPoint : stayPoints) {
-            Location spAsLocation = stayPoint.convertStayPointToLocation();
+        for (DbStayPoint dbStayPoint : dbStayPoints) {
+            Location spAsLocation = dbStayPoint.getStayPoint().convertStayPointToLocation();
             float distance = location.distanceTo(spAsLocation);
 
             if (distance <= closestDistance) {
                 closestDistance = distance;
-                closestStayPoint = stayPoint;
+                closestStayPoint = dbStayPoint;
             }
         }
 

@@ -228,7 +228,7 @@ public class MainActivity extends Activity {
 
     private void clearStayPointsTable() {
         StayPointRepository repository = new StayPointRepository(this, 500);
-        repository.getStayPointsDal().clearTableStayPoints();
+        repository.getStayPointsDal().clearDatabase();
     }
 
     private void clickStartMobilityTracker(View view) {

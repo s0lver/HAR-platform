@@ -25,10 +25,10 @@ public class StayPointRepository {
     }
 
     public boolean contains(StayPoint stayPoint) {
-        ArrayList<StayPoint> stayPoints = getAllStayPoints();
+        ArrayList<DbStayPoint> stayPoints = stayPointsDal.getAll();
         Location stayPointAsLocation = stayPoint.convertStayPointToLocation();
 
-        StayPoint closestStayPoint = LocationAnalyzer.findClosestStayPoint(stayPointAsLocation, stayPoints, minimumDistanceThreshold);
+        DbStayPoint closestStayPoint = LocationAnalyzer.findClosestStayPoint(stayPointAsLocation, stayPoints, minimumDistanceThreshold);
         return closestStayPoint != null;
     }
 
@@ -66,19 +66,22 @@ public class StayPointRepository {
         DbStayPoint updatedDbStayPoint = stayPointsDal.update(stayPoint);
     }
 
-    /***
-     * Obtains the full list of stay points learned by the platform
-     * @return An ArrayList of the stay points learned by the platform
-     * @see StayPoint
-     */
-    public ArrayList<StayPoint> getAllStayPoints() {
-        ArrayList<StayPoint> stayPoints = new ArrayList<>();
-
-        ArrayList<DbStayPoint> dbStayPoints = stayPointsDal.getAll();
-        for (DbStayPoint dbStayPoint : dbStayPoints) {
-            stayPoints.add(dbStayPoint.getStayPoint());
-        }
-
-        return stayPoints;
+    public ArrayList<DbStayPoint> getAllStayPoints() {
+        return stayPointsDal.getAll();
     }
+//    /***
+//     * Obtains the full list of stay points learned by the platform
+//     * @return An ArrayList of the stay points learned by the platform
+//     * @see StayPoint
+//     */
+//    public ArrayList<StayPoint> getAllStayPoints() {
+//        ArrayList<StayPoint> stayPoints = new ArrayList<>();
+//
+//        ArrayList<DbStayPoint> dbStayPoints = stayPointsDal.getAll();
+//        for (DbStayPoint dbStayPoint : dbStayPoints) {
+//            stayPoints.add(dbStayPoint.getStayPoint());
+//        }
+//
+//        return stayPoints;
+//    }
 }

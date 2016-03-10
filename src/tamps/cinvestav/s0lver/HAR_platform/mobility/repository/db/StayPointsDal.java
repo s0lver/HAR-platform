@@ -20,7 +20,7 @@ import java.util.Date;
 public class StayPointsDal {
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
-    private String[] allColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_LATITUDE, SQLiteHelper.COLUMN_LONGITUDE,
+    private String[] allStayPointsTableColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_LATITUDE, SQLiteHelper.COLUMN_LONGITUDE,
             SQLiteHelper.COLUMN_ARRIVAL_TIME, SQLiteHelper.COLUMN_DEPARTURE_TIME, SQLiteHelper.COLUMN_VISIT_COUNT};
 
     public StayPointsDal(Context context) {
@@ -68,7 +68,7 @@ public class StayPointsDal {
      * @see DbStayPoint
      */
     private DbStayPoint findStayPoint(long id) {
-        Cursor cursor = database.query(SQLiteHelper.TABLE_STAY_POINTS, allColumns,
+        Cursor cursor = database.query(SQLiteHelper.TABLE_STAY_POINTS, allStayPointsTableColumns,
                 SQLiteHelper.COLUMN_ID + " = " + id, null, null, null, null);
         cursor.moveToFirst();
         return createStayPointFromCursor(cursor);
@@ -159,7 +159,7 @@ public class StayPointsDal {
     public ArrayList<DbStayPoint> getAll() {
         ArrayList<DbStayPoint> dbStayPoints = new ArrayList<DbStayPoint>();
         this.open();
-        Cursor cursor = database.query(SQLiteHelper.TABLE_STAY_POINTS, allColumns, null, null, null, null, null);
+        Cursor cursor = database.query(SQLiteHelper.TABLE_STAY_POINTS, allStayPointsTableColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -174,11 +174,11 @@ public class StayPointsDal {
     }
 
     /***
-     * Recreates the StayPoints' table
+     * Clears all database' tables
      */
-    public void clearTableStayPoints() {
+    public void clearDatabase() {
         open();
-        dbHelper.clearTableStayPoints(database);
+        dbHelper.clearDatabase(database);
         close();
         Log.i(this.getClass().getSimpleName(), "Table " + SQLiteHelper.TABLE_STAY_POINTS + " cleared");
     }

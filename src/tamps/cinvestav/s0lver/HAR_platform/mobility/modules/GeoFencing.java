@@ -6,18 +6,23 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.MobilityListener
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.LocationAnalyzer;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointRepository;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.StayPointVisitsDal;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPointVisit;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class GeoFencing {
     private final StayPointRepository stayPointRepository;
-    private StayPoint currentStayPoint;
-    private StayPoint previousStayPoint;
+    private final StayPointVisitsDal visitsDal;
+    private DbStayPoint currentStayPoint;
+    private DbStayPoint previousStayPoint;
     private MobilityListener mobilityListener;
     private final double minDistanceParameter;
 
     private boolean isUserAtStayPoint, wasUserAtStayPoint;
+    private DbStayPointVisit currentVisit;
 
     /***
      * Constructor
@@ -29,6 +34,7 @@ public class GeoFencing {
      */
     public GeoFencing(Context context, double minimumDistanceParameter, MobilityListener mobilityListener) {
         this.stayPointRepository = new StayPointRepository(context, minimumDistanceParameter);
+        this.visitsDal = new StayPointVisitsDal(context);
         this.minDistanceParameter = minimumDistanceParameter;
         this.mobilityListener = mobilityListener;
         this.isUserAtStayPoint = false;
@@ -42,8 +48,8 @@ public class GeoFencing {
      * @see StayPoint
      */
     public void evaluateMobility(Location location) {
-        ArrayList<StayPoint> stayPoints = stayPointRepository.getAllStayPoints();
-        StayPoint closestStayPoint = LocationAnalyzer.findClosestStayPoint(location, stayPoints, minDistanceParameter);
+        ArrayList<DbStayPoint> stayPoints = stayPointRepository.getAllStayPoints();
+        DbStayPoint closestStayPoint = LocationAnalyzer.findClosestStayPoint(location, stayPoints, minDistanceParameter);
 
         wasUserAtStayPoint = isUserAtStayPoint;
         previousStayPoint = currentStayPoint;
@@ -52,11 +58,26 @@ public class GeoFencing {
         if (currentStayPoint != null) {
             isUserAtStayPoint = true;
             if (isUserArrivingStayPoint()) {
+                // TODO Add the information of the current visit!
+                // 1. Add the visit information for this StayPoint
+                DbStayPointVisit visit = new DbStayPointVisit(0, currentStayPoint.getId(), new Date(location.getTime()),
+                        new Date(location.getTime()), 0, 0, 0);
+                currentVisit = visitsDal.add(visit);
+
+                // 2. Update the visit information of this StayPoint
+                currentStayPoint.setVisitCount(currentStayPoint.getVisitCount() + 1);
+                stayPointRepository.update(currentStayPoint);
+
+                // 3. Notify that the user is arriving, so that HAR can be triggered
                 mobilityListener.onUserArrivingStayPoint(currentStayPoint, new Date(location.getTime()));
             }
         } else {
             isUserAtStayPoint = false;
             if (isUserLeavingStayPoint()) {
+                // TODO
+                // 1. Update the visit information for this StayPoint
+                // ie the leaving time, and the percentages!
+
                 mobilityListener.onUserLeavingStayPoint(new Date(location.getTime()));
             }
         }

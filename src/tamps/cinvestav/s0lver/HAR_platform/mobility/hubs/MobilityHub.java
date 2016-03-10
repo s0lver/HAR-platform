@@ -14,6 +14,8 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.hal.LocationReader;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.GeoFencing;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.LocationLogger;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.StayPointDetector;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbActivityInStayPoint;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 
 import java.util.Date;
 
@@ -53,7 +55,7 @@ public class MobilityHub {
     private MobilityListener buildMobilityListener() {
         return new MobilityListener() {
             @Override
-            public void onUserArrivingStayPoint(StayPoint stayPoint, Date timeOfArrivalDetected) {
+            public void onUserArrivingStayPoint(DbStayPoint dbStayPoint, Date timeOfArrivalDetected) {
                 Log.i(this.getClass().getSimpleName(), "User is arriving at a StayPoint");
                 // TODO define a mechanism for defining how many times to invoke and how to stop the HAR system
                 Log.i(this.getClass().getSimpleName(), "Starting HAR module");
@@ -72,7 +74,9 @@ public class MobilityHub {
         return new NaiveBayesListener() {
             @Override
             public void onClassifiedPattern(byte predictedActivityType) {
-                // TODO work from here, launch the counting-voting of the activity and work for saving such information on db
+                // TODO complete here
+                // 1 Create a DbActivityInStayPoint object with current Time
+                // DbActivityInStayPoint activity = new DbActivityInStayPoint(0, geoFencing.getCurrentVisit(), predictedActivityType, new Date(System.currentTimeMillis()));
             }
         };
     }
