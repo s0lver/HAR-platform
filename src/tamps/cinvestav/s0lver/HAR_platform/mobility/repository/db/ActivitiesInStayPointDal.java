@@ -63,15 +63,15 @@ public class ActivitiesInStayPointDal {
 
     /***
      * Builds a ContentValues dictionary? from the values of the DbActivityInStayPoint reference
-     * @param dbActivityInStayPoint
+     * @param activity
      * @return A ContentValues object with the mapped information from the DbStayPoint reference
      * @see DbActivityInStayPoint
      */
-    private ContentValues buildContentValues(DbActivityInStayPoint dbActivityInStayPoint) {
+    private ContentValues buildContentValues(DbActivityInStayPoint activity) {
         ContentValues values = new ContentValues();
-        values.put(SQLiteHelper.COLUMN_VISIT_ID, dbActivityInStayPoint.getIdVisit());
-        values.put(SQLiteHelper.COLUMN_ACTIVITY_TYPE, dbActivityInStayPoint.getActivityType());
-        values.put(SQLiteHelper.COLUMN_TIMESTAMP, Constants.SIMPLE_DATE_FORMAT.format(dbActivityInStayPoint.getTimestamp()));
+        values.put(SQLiteHelper.COLUMN_VISIT_ID, activity.getIdVisit());
+        values.put(SQLiteHelper.COLUMN_ACTIVITY_TYPE, activity.getActivityType());
+        values.put(SQLiteHelper.COLUMN_TIMESTAMP, Constants.SIMPLE_DATE_FORMAT.format(activity.getTimestamp()));
 
         return values;
     }
@@ -115,7 +115,7 @@ public class ActivitiesInStayPointDal {
      * @return An ArrayList of the activities performed on the specified idVisit
      * @see DbActivityInStayPoint
      */
-    private ArrayList<DbActivityInStayPoint> getAllByVisit(long idVisit) {
+    public ArrayList<DbActivityInStayPoint> getAllByVisit(long idVisit) {
         ArrayList<DbActivityInStayPoint> dbActivities = new ArrayList<DbActivityInStayPoint>();
         this.open();
         Cursor cursor = database.query(SQLiteHelper.TABLE_STAY_POINTS, allActivitiesTableColumns, SQLiteHelper.COLUMN_VISIT_ID, new String[]{String.valueOf(idVisit)}, null, null, null);
@@ -138,7 +138,7 @@ public class ActivitiesInStayPointDal {
      * @return The list of activities performed on the StayPoint (<b>all time</b>).
      * @see DbActivityInStayPoint
      */
-    private ArrayList<DbActivityInStayPoint> getAllByStayPoint(long idStayPoint) {
+    public ArrayList<DbActivityInStayPoint> getAllByStayPoint(long idStayPoint) {
         ArrayList<DbActivityInStayPoint> activities = new ArrayList<>();
 
         StayPointVisitsDal visitsDal = new StayPointVisitsDal(this.context);

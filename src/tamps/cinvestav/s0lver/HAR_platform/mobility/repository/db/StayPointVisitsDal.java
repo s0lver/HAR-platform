@@ -13,7 +13,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class StayPointVisitsDal {
+class StayPointVisitsDal {
     private SQLiteDatabase database;
     private SQLiteHelper dbHelper;
     private String[] allVisitsTableColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_STAY_POINT_ID, SQLiteHelper.COLUMN_ARRIVAL_TIME,
@@ -56,20 +56,32 @@ public class StayPointVisitsDal {
         return visit;
     }
 
+    public DbStayPointVisit update(DbStayPointVisit visit) {
+        this.open();
+
+        ContentValues values = buildContentValues(visit);
+        database.update(SQLiteHelper.TABLE_VISITS, values, SQLiteHelper.COLUMN_ID + " = " + visit.getId(), null);
+        DbStayPointVisit updatedVisit = findVisit(visit.getId());
+
+        this.close();
+        Log.i(this.getClass().getSimpleName(), "Record updated");
+        return updatedVisit;
+    }
+
     /***
      * Builds a ContentValues dictionary? from the values of the DbStayPointVisit reference
-     * @param dbStayPointVisit
+     * @param visit
      * @return A ContentValues object with the mapped information from the DbStayPointVisit reference
      * @see DbStayPointVisit
      */
-    private ContentValues buildContentValues(DbStayPointVisit dbStayPointVisit) {
+    private ContentValues buildContentValues(DbStayPointVisit visit) {
         ContentValues values = new ContentValues();
-        values.put(SQLiteHelper.COLUMN_STAY_POINT_ID, dbStayPointVisit.getIdStayPoint());
-        values.put(SQLiteHelper.COLUMN_ARRIVAL_TIME, Constants.SIMPLE_DATE_FORMAT.format(dbStayPointVisit.getArrivalTime()));
-        values.put(SQLiteHelper.COLUMN_DEPARTURE_TIME, Constants.SIMPLE_DATE_FORMAT.format(dbStayPointVisit.getDepartureTime()));
-        values.put(SQLiteHelper.COLUMN_STATIC_PERCENTAGE, dbStayPointVisit.getStaticPercentage());
-        values.put(SQLiteHelper.COLUMN_WALKING_PERCENTAGE, dbStayPointVisit.getWalkingPercentage());
-        values.put(SQLiteHelper.COLUMN_RUNNING_PERCENTAGE, dbStayPointVisit.getRunningPercentage());
+        values.put(SQLiteHelper.COLUMN_STAY_POINT_ID, visit.getIdStayPoint());
+        values.put(SQLiteHelper.COLUMN_ARRIVAL_TIME, Constants.SIMPLE_DATE_FORMAT.format(visit.getArrivalTime()));
+        values.put(SQLiteHelper.COLUMN_DEPARTURE_TIME, Constants.SIMPLE_DATE_FORMAT.format(visit.getDepartureTime()));
+        values.put(SQLiteHelper.COLUMN_STATIC_PERCENTAGE, visit.getStaticPercentage());
+        values.put(SQLiteHelper.COLUMN_WALKING_PERCENTAGE, visit.getWalkingPercentage());
+        values.put(SQLiteHelper.COLUMN_RUNNING_PERCENTAGE, visit.getRunningPercentage());
 
         return values;
     }
@@ -111,10 +123,22 @@ public class StayPointVisitsDal {
         }
     }
 
-    public ArrayList<DbStayPointVisit> getAllByStayPoint(DbStayPoint dbStayPoint) {
-        return getAllByStayPoint(dbStayPoint.getId());
+    /***
+     * Obtains all the visits DbStayPointVisit from the DbStayPoint specified
+     * @param stayPoint The StayPoint from which visits are to be collected
+     * @return An ArrayList of the DbStayPointVisit objects
+     * @see DbStayPointVisit
+     */
+    public ArrayList<DbStayPointVisit> getAllByStayPoint(DbStayPoint stayPoint) {
+        return getAllByStayPoint(stayPoint.getId());
     }
 
+    /***
+     * Obtains all the visits DbStayPointVisit from the StayPoint id specified
+     * @param stayPointId The id of the StayPoint from which visits are to be collected
+     * @return An ArrayList of the DbStayPointVisit objects
+     * @see DbStayPointVisit
+     */
     public ArrayList<DbStayPointVisit> getAllByStayPoint(long stayPointId) {
         ArrayList<DbStayPointVisit> dbStayPointVisits = new ArrayList<>();
         this.open();
@@ -131,4 +155,5 @@ public class StayPointVisitsDal {
         this.close();
         return dbStayPointVisits;
     }
+
 }

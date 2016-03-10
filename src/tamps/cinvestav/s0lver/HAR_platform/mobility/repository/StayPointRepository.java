@@ -13,15 +13,15 @@ import java.util.ArrayList;
 public class StayPointRepository {
     private double minimumDistanceThreshold;
 
-    public StayPointsDal getStayPointsDal() {
-        return stayPointsDal;
-    }
-
     private StayPointsDal stayPointsDal;
 
     public StayPointRepository(Context context, double minimumDistanceThreshold) {
         this.minimumDistanceThreshold = minimumDistanceThreshold;
         stayPointsDal = new StayPointsDal(context);
+    }
+
+    public StayPointsDal getStayPointsDal() {
+        return stayPointsDal;
     }
 
     public boolean contains(StayPoint stayPoint) {

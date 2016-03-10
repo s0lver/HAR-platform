@@ -6,7 +6,9 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.MobilityListener
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.LocationAnalyzer;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointRepository;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.StayPointVisitsDal;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.ActivitiesInStayPointDal;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.StayPointVisitsRepository;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbActivityInStayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPointVisit;
 
@@ -15,7 +17,8 @@ import java.util.Date;
 
 public class GeoFencing {
     private final StayPointRepository stayPointRepository;
-    private final StayPointVisitsDal visitsDal;
+    private final StayPointVisitsRepository visitRepository;
+    private final ActivitiesInStayPointDal activitiesDal;
     private DbStayPoint currentStayPoint;
     private DbStayPoint previousStayPoint;
     private MobilityListener mobilityListener;
@@ -34,7 +37,8 @@ public class GeoFencing {
      */
     public GeoFencing(Context context, double minimumDistanceParameter, MobilityListener mobilityListener) {
         this.stayPointRepository = new StayPointRepository(context, minimumDistanceParameter);
-        this.visitsDal = new StayPointVisitsDal(context);
+        this.visitRepository = new StayPointVisitsRepository(context);
+        this.activitiesDal = new ActivitiesInStayPointDal(context);
         this.minDistanceParameter = minimumDistanceParameter;
         this.mobilityListener = mobilityListener;
         this.isUserAtStayPoint = false;
@@ -58,29 +62,37 @@ public class GeoFencing {
         if (currentStayPoint != null) {
             isUserAtStayPoint = true;
             if (isUserArrivingStayPoint()) {
-                // TODO Add the information of the current visit!
                 // 1. Add the visit information for this StayPoint
-                DbStayPointVisit visit = new DbStayPointVisit(0, currentStayPoint.getId(), new Date(location.getTime()),
-                        new Date(location.getTime()), 0, 0, 0);
-                currentVisit = visitsDal.add(visit);
+                DbStayPointVisit visit = buildVisit(location);
+                currentVisit = visitRepository.add(visit);
 
                 // 2. Update the visit information of this StayPoint
-                currentStayPoint.setVisitCount(currentStayPoint.getVisitCount() + 1);
                 stayPointRepository.update(currentStayPoint);
 
                 // 3. Notify that the user is arriving, so that HAR can be triggered
-                mobilityListener.onUserArrivingStayPoint(currentStayPoint, new Date(location.getTime()));
+                mobilityListener.onUserArrivingStayPoint(currentStayPoint, visit.getArrivalTime());
             }
         } else {
             isUserAtStayPoint = false;
             if (isUserLeavingStayPoint()) {
-                // TODO
                 // 1. Update the visit information for this StayPoint
-                // ie the leaving time, and the percentages!
+                visitRepository.updateVisitInformation(currentVisit);
 
-                mobilityListener.onUserLeavingStayPoint(new Date(location.getTime()));
+                // 2. Notifies that the user is leaving, so that HAR can be stopped
+                mobilityListener.onUserLeavingStayPoint(currentVisit.getDepartureTime());
             }
         }
+    }
+
+    /***
+     * Builds an initial visit record with default parameters
+     * @param location The location to extract arrivalTime
+     * @return A DbStayPointVisit object with thee initial information of the visit.
+     * @see DbStayPointVisit
+     */
+    private DbStayPointVisit buildVisit(Location location) {
+        return new DbStayPointVisit(0, currentStayPoint.getId(), new Date(location.getTime()),
+                new Date(location.getTime()), 0, 0, 0);
     }
 
     /***

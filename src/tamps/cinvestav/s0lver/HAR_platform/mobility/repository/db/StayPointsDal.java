@@ -76,16 +76,16 @@ public class StayPointsDal {
 
     /***
      * Updates a DbStayPoint and returns an updated reference
-     * @param dbStayPoint The DbStayPoint to update
+     * @param stayPoint The DbStayPoint to update
      * @return A reference to a DbStayPoint with the updated information
      * @see DbStayPoint
      */
-    public DbStayPoint update(DbStayPoint dbStayPoint) {
+    public DbStayPoint update(DbStayPoint stayPoint) {
         this.open();
 
-        ContentValues values = buildContentValues(dbStayPoint);
-        database.update(SQLiteHelper.TABLE_STAY_POINTS, values, SQLiteHelper.COLUMN_ID + " = " + dbStayPoint.getId(), null);
-        DbStayPoint updatedStayPoint = findStayPoint(dbStayPoint.getId());
+        ContentValues values = buildContentValues(stayPoint);
+        database.update(SQLiteHelper.TABLE_STAY_POINTS, values, SQLiteHelper.COLUMN_ID + " = " + stayPoint.getId(), null);
+        DbStayPoint updatedStayPoint = findStayPoint(stayPoint.getId());
 
         this.close();
         Log.i(this.getClass().getSimpleName(), "Record updated");
@@ -94,17 +94,17 @@ public class StayPointsDal {
 
     /***
      * Builds a ContentValues dictionary? from the values of the DbStayPoint reference
-     * @param dbStayPoint
+     * @param stayPoint
      * @return A ContentValues object with the mapped information from the DbStayPoint reference
      * @see DbStayPoint
      */
-    private ContentValues buildContentValues(DbStayPoint dbStayPoint) {
+    private ContentValues buildContentValues(DbStayPoint stayPoint) {
         ContentValues values = new ContentValues();
-        values.put(SQLiteHelper.COLUMN_LATITUDE, dbStayPoint.getStayPoint().getLatitude());
-        values.put(SQLiteHelper.COLUMN_LONGITUDE, dbStayPoint.getStayPoint().getLongitude());
-        values.put(SQLiteHelper.COLUMN_ARRIVAL_TIME, Constants.SIMPLE_DATE_FORMAT.format(dbStayPoint.getStayPoint().getArrivalTime()));
-        values.put(SQLiteHelper.COLUMN_DEPARTURE_TIME, Constants.SIMPLE_DATE_FORMAT.format(dbStayPoint.getStayPoint().getDepartureTime()));
-        values.put(SQLiteHelper.COLUMN_VISIT_COUNT, dbStayPoint.getVisitCount());
+        values.put(SQLiteHelper.COLUMN_LATITUDE, stayPoint.getStayPoint().getLatitude());
+        values.put(SQLiteHelper.COLUMN_LONGITUDE, stayPoint.getStayPoint().getLongitude());
+        values.put(SQLiteHelper.COLUMN_ARRIVAL_TIME, Constants.SIMPLE_DATE_FORMAT.format(stayPoint.getStayPoint().getArrivalTime()));
+        values.put(SQLiteHelper.COLUMN_DEPARTURE_TIME, Constants.SIMPLE_DATE_FORMAT.format(stayPoint.getStayPoint().getDepartureTime()));
+        values.put(SQLiteHelper.COLUMN_VISIT_COUNT, stayPoint.getVisitCount());
 
         return values;
     }
@@ -133,11 +133,11 @@ public class StayPointsDal {
 
     /***
      * Deletes a DbStayPoint
-     * @param dbStayPoint The DbStayPoint reference to delete. (Id needed).
+     * @param stayPoint The DbStayPoint reference to delete. (Id needed).
      * @see DbStayPoint
      */
-    public void delete(DbStayPoint dbStayPoint) {
-        long id = dbStayPoint.getId();
+    public void delete(DbStayPoint stayPoint) {
+        long id = stayPoint.getId();
         delete(id);
     }
 
