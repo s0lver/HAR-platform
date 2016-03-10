@@ -66,22 +66,12 @@ public class StayPointRepository {
         DbStayPoint updatedDbStayPoint = stayPointsDal.update(stayPoint);
     }
 
+    /***
+     * Obtains the full list of stay points learned by the platform
+     * @return An ArrayList of the stay points learned by the platform
+     * @see DbStayPoint
+     */
     public ArrayList<DbStayPoint> getAllStayPoints() {
         return stayPointsDal.getAll();
     }
-//    /***
-//     * Obtains the full list of stay points learned by the platform
-//     * @return An ArrayList of the stay points learned by the platform
-//     * @see StayPoint
-//     */
-//    public ArrayList<StayPoint> getAllStayPoints() {
-//        ArrayList<StayPoint> stayPoints = new ArrayList<>();
-//
-//        ArrayList<DbStayPoint> dbStayPoints = stayPointsDal.getAll();
-//        for (DbStayPoint dbStayPoint : dbStayPoints) {
-//            stayPoints.add(dbStayPoint.getStayPoint());
-//        }
-//
-//        return stayPoints;
-//    }
 }

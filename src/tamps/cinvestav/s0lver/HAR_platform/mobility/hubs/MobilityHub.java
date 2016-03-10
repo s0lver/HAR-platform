@@ -11,16 +11,19 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.GeoFencing;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.LocationLogger;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.StayPointDetector;
 
+/***
+ * Controls the tracking of user, both in terms of location and activity
+ */
 public class MobilityHub {
     private LocationReader locationReader;
     private StayPointDetector stayPointDetector;
     private GeoFencing geoFencing;
     private LocationLogger locationLogger;
 
-    public MobilityHub(Context context, long minimumTimeThreshold, double minimumDistanceParameter) {
+    public MobilityHub(Context context, long minimumTimeThreshold, double minimumDistanceParameter, int harWindowsPerIntervention, long readingsPeriodRate) {
         this.locationReader = new LocationReader(context, new LocalLocationListener());
         this.stayPointDetector = new StayPointDetector(context, minimumTimeThreshold, minimumDistanceParameter);
-        this.geoFencing = new GeoFencing(context, minimumDistanceParameter);
+        this.geoFencing = new GeoFencing(context, minimumDistanceParameter, harWindowsPerIntervention, readingsPeriodRate);
         this.locationLogger = new LocationLogger(context);
     }
 
@@ -41,15 +44,6 @@ public class MobilityHub {
         stayPointDetector.analyzeLastPart();
     }
 
-    private StayPointListener buildStayPointListener() {
-        return new StayPointListener() {
-            @Override
-            public void onStayPointDetected(StayPoint stayPoint) {
-
-            }
-        };
-    }
-
     private class LocalLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location location) {
@@ -58,19 +52,12 @@ public class MobilityHub {
         }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            // Not used at the moment
-        }
+        public void onStatusChanged(String provider, int status, Bundle extras) { }
 
         @Override
-        public void onProviderEnabled(String provider) {
-            // Not used at the moment
-        }
+        public void onProviderEnabled(String provider) { }
 
         @Override
-        public void onProviderDisabled(String provider) {
-            // Not used at the moment
-        }
+        public void onProviderDisabled(String provider) { }
     }
-
 }

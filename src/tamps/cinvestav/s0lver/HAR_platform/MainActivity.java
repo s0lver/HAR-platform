@@ -2,6 +2,7 @@ package tamps.cinvestav.s0lver.HAR_platform;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -17,6 +18,7 @@ import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.hubs.MobilityHub;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointRepository;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.SQLiteHelper;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 
 import java.util.ArrayList;
@@ -37,7 +39,9 @@ public class MainActivity extends Activity {
     private boolean classificationInProgress;
     private Spinner lstActivities;
 
-    MobilityHub mobilityHub;
+    private MobilityHub mobilityHub;
+    private int harWindowsPerIntervention = 5;
+    private long readingsPeriodRate = tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.ONE_MINUTE;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class MainActivity extends Activity {
         prepareSoundPlayers();
         prepareSpinners();
         accelerometerHub = new AccelerometerHub(this);
-        mobilityHub = new MobilityHub(this, Constants.ONE_SECOND * 45, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER);
+        mobilityHub = new MobilityHub(this, Constants.ONE_SECOND * 45, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER, harWindowsPerIntervention, readingsPeriodRate);
     }
 
     /***
@@ -203,7 +207,8 @@ public class MainActivity extends Activity {
 
     private void recreateDatabase() {
         StayPointRepository repository = new StayPointRepository(this, 500);
-        repository.getStayPointsDal().recreateDatabase();
+        SQLiteHelper dbHelper = new SQLiteHelper(this);
+        dbHelper.recreateDatabase();
     }
 
     private void showAllStayPoints() {
@@ -228,7 +233,8 @@ public class MainActivity extends Activity {
 
     private void clearStayPointsTable() {
         StayPointRepository repository = new StayPointRepository(this, 500);
-        repository.getStayPointsDal().clearDatabase();
+        SQLiteHelper helper = new SQLiteHelper(this);
+        helper.clearDatabase();
     }
 
     private void clickStartMobilityTracker(View view) {

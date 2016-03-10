@@ -80,7 +80,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void clearDatabase(SQLiteDatabase database) {
+    /***
+     * Clears all tables of the database
+     */
+    public void clearDatabase() {
+        SQLiteDatabase database = getWritableDatabase();
         String clearTableQuery = "DELETE FROM " + SQLiteHelper.TABLE_ACTIVITIES;
         database.execSQL(clearTableQuery);
 
@@ -91,7 +95,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         database.execSQL(clearTableQuery);
     }
 
-    public void recreateDatabase(SQLiteDatabase database) {
+    /***
+     * Drops and recreates all tables of the database
+     */
+    public void recreateDatabase() {
+        SQLiteDatabase database = getWritableDatabase();
         String recreateDBQuery = "DROP TABLE " + SQLiteHelper.TABLE_ACTIVITIES;
         database.execSQL(recreateDBQuery);
 

@@ -173,22 +173,22 @@ public class StayPointsDal {
         return dbStayPoints;
     }
 
-    /***
-     * Clears all database' tables
-     */
-    public void clearDatabase() {
-        open();
-        dbHelper.clearDatabase(database);
-        close();
-        Log.i(this.getClass().getSimpleName(), "Table " + SQLiteHelper.TABLE_STAY_POINTS + " cleared");
-    }
-
-    /***
-     * Drops all tables and recreate database
-     */
-    public void recreateDatabase() {
-        open();
-        dbHelper.recreateDatabase(database);
-        close();
-    }
+//    /***
+//     * Clears all database' tables
+//     */
+//    public void clearDatabase() {
+//        open();
+//        dbHelper.clearDatabase(database);
+//        close();
+//        Log.i(this.getClass().getSimpleName(), "Table " + SQLiteHelper.TABLE_STAY_POINTS + " cleared");
+//    }
+//
+//    /***
+//     * Drops all tables and recreate database
+//     */
+//    public void recreateDatabase() {
+//        open();
+//        dbHelper.recreateDatabase(database);
+//        close();
+//    }
 }
