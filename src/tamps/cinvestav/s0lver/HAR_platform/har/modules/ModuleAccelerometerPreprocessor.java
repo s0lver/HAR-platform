@@ -57,7 +57,7 @@ public class ModuleAccelerometerPreprocessor {
         String filePrefix = activityType + "_" + (sizeOfWindow / Constants.ONE_SECOND) + "_secs_";
         String partialFilePath = Environment.getExternalStorageDirectory() + File.separator +
                 "har-system" + File.separator + filePrefix;
-//        String filepathMagnitudeVector = partialFilePath + "magnitudevector_" + Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
+//        String filepathMagnitudeVector = partialFilePath + "magnitudevector_" + Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
 //        new MagnitudeVectorFileWriter(currentRun, filepathMagnitudeVector, magnitudeVector).writeFile();
         String filepathPatterns = partialFilePath + "patterns_" + Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
         ActivityPattern pattern = new ActivityPattern(Activities.UNKNOWN, stdDev, mean);

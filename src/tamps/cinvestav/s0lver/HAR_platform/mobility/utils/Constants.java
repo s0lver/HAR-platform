@@ -28,10 +28,20 @@ public class Constants {
     /***
      * Standard date format for output of data (for instance, in file names).
      */
-    public static final String DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
+    public static final String FILE_NAMES_DATE_FORMAT = "dd-MM-yyyy_HH-mm-ss";
 
     /***
-     * Date format object for formating dates and keeping them uniform across the system
+     * Date format object for formatting dates and keeping them uniform across the system
      */
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+    public static final SimpleDateFormat FILE_NAMES_SIMPLE_DATE_FORMAT = new SimpleDateFormat(FILE_NAMES_DATE_FORMAT, Locale.ENGLISH);
+
+    /***
+     * Standard date format used in records file
+     */
+    private static final String RECORDS_DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
+
+    /***
+     * Date format object for formatting dates existing in files content
+     */
+    public static final SimpleDateFormat RECORDS_SIMPLE_DATE_FORMAT = new SimpleDateFormat(RECORDS_DATE_FORMAT, Locale.ENGLISH);
 }

@@ -39,7 +39,7 @@ public class LocationLogger implements LocationListener{
     private void writeLocationAndBatteryInfo(Location location, BatteryStatus batteryStatus) {
         String filePath = Environment.getExternalStorageDirectory() + File.separator
                 + "har-system" + File.separator + "Gps_records_" +
-                Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
+                Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
         new GpsLocationsFileWriter(filePath, location, batteryStatus).writeFile();
     }
 

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbActivityInStayPoint;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPointVisit;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants;
 
@@ -71,7 +70,7 @@ public class ActivitiesInStayPointDal {
         ContentValues values = new ContentValues();
         values.put(SQLiteHelper.COLUMN_VISIT_ID, activity.getIdVisit());
         values.put(SQLiteHelper.COLUMN_ACTIVITY_TYPE, activity.getActivityType());
-        values.put(SQLiteHelper.COLUMN_TIMESTAMP, Constants.SIMPLE_DATE_FORMAT.format(activity.getTimestamp()));
+        values.put(SQLiteHelper.COLUMN_TIMESTAMP, Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(activity.getTimestamp()));
 
         return values;
     }
@@ -100,7 +99,7 @@ public class ActivitiesInStayPointDal {
             long id = cursor.getLong(0);
             long idVisit = cursor.getLong(1);
             int activityType = cursor.getInt(2);
-            Date timestamp = Constants.SIMPLE_DATE_FORMAT.parse(cursor.getString(3));
+            Date timestamp = Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.parse(cursor.getString(3));
 
             return new DbActivityInStayPoint(id, idVisit, activityType, timestamp);
         } catch (ParseException e) {

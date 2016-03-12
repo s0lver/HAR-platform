@@ -77,8 +77,8 @@ class StayPointVisitsDal {
     private ContentValues buildContentValues(DbStayPointVisit visit) {
         ContentValues values = new ContentValues();
         values.put(SQLiteHelper.COLUMN_STAY_POINT_ID, visit.getIdStayPoint());
-        values.put(SQLiteHelper.COLUMN_ARRIVAL_TIME, Constants.SIMPLE_DATE_FORMAT.format(visit.getArrivalTime()));
-        values.put(SQLiteHelper.COLUMN_DEPARTURE_TIME, Constants.SIMPLE_DATE_FORMAT.format(visit.getDepartureTime()));
+        values.put(SQLiteHelper.COLUMN_ARRIVAL_TIME, Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(visit.getArrivalTime()));
+        values.put(SQLiteHelper.COLUMN_DEPARTURE_TIME, Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(visit.getDepartureTime()));
         values.put(SQLiteHelper.COLUMN_STATIC_PERCENTAGE, visit.getStaticPercentage());
         values.put(SQLiteHelper.COLUMN_WALKING_PERCENTAGE, visit.getWalkingPercentage());
         values.put(SQLiteHelper.COLUMN_RUNNING_PERCENTAGE, visit.getRunningPercentage());
@@ -109,8 +109,8 @@ class StayPointVisitsDal {
         try {
             long id = cursor.getLong(0);
             long idStayPoint = cursor.getLong(1);
-            Date arrivalTime = Constants.SIMPLE_DATE_FORMAT.parse(cursor.getString(2));
-            Date departureTime = Constants.SIMPLE_DATE_FORMAT.parse(cursor.getString(3));
+            Date arrivalTime = Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.parse(cursor.getString(2));
+            Date departureTime = Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.parse(cursor.getString(3));
             double staticPercentage = cursor.getDouble(4);
             double walkingPercentage = cursor.getDouble(5);
             double runningPercentage = cursor.getDouble(6);

@@ -14,14 +14,14 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.StayPointDetector;
 /***
  * Controls the tracking of user, both in terms of location and activity
  */
-public class MobilityHub {
+public class MobilityHub implements LocationListener{
     private LocationReader locationReader;
     private StayPointDetector stayPointDetector;
     private GeoFencing geoFencing;
     private LocationLogger locationLogger;
 
     public MobilityHub(Context context, long minimumTimeThreshold, double minimumDistanceParameter, int harWindowsPerIntervention, long readingsPeriodRate) {
-        this.locationReader = new LocationReader(context, new LocalLocationListener());
+        this.locationReader = new LocationReader(context, this);
         this.stayPointDetector = new StayPointDetector(context, minimumTimeThreshold, minimumDistanceParameter);
         this.geoFencing = new GeoFencing(context, minimumDistanceParameter, harWindowsPerIntervention, readingsPeriodRate);
         this.locationLogger = new LocationLogger(context);
@@ -44,20 +44,25 @@ public class MobilityHub {
         stayPointDetector.analyzeLastPart();
     }
 
-    private class LocalLocationListener implements LocationListener {
-        @Override
-        public void onLocationChanged(Location location) {
-            stayPointDetector.analyzeLocation(location);
-            geoFencing.evaluateMobility(location);
-        }
+    @Override
+    public void onLocationChanged(Location location) {
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) { }
+        stayPointDetector.analyzeLocation(location);
+        geoFencing.evaluateMobility(location);
+    }
 
-        @Override
-        public void onProviderEnabled(String provider) { }
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-        @Override
-        public void onProviderDisabled(String provider) { }
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

@@ -44,7 +44,7 @@ public class LocationAnalyzer {
                 .append(location.getAccuracy())
                 .append(",")
                 .append(location.getSpeed())
-                .append(Constants.SIMPLE_DATE_FORMAT.format(date));
+                .append(Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(date));
 
         return sb.toString();
     }

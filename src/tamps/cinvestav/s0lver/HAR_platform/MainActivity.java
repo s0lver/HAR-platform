@@ -2,7 +2,7 @@ package tamps.cinvestav.s0lver.HAR_platform;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -17,6 +17,7 @@ import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.hubs.MobilityHub;
+import tamps.cinvestav.s0lver.HAR_platform.mobility.io.SmartphoneFixesFileReader;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointRepository;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.SQLiteHelper;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
@@ -43,6 +44,11 @@ public class MainActivity extends Activity {
     private int harWindowsPerIntervention = 5;
     private long readingsPeriodRate = tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.ONE_MINUTE;
 
+    private final int[] STARTING_ROWS_OF_STAY_POINT = new int[]{1, 278, 351, 653, 801, 955, 1050, 1122, 1363, 1543, 1700, 1778, 1952, 2152, 2648, 2802, 2948};
+    private final int LAST_LEARNING_FIX = 614;
+    private final int LAST_FIX = 3254;
+    private SmartphoneFixesFileReader reader;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +58,8 @@ public class MainActivity extends Activity {
         prepareSpinners();
         accelerometerHub = new AccelerometerHub(this);
         mobilityHub = new MobilityHub(this, Constants.ONE_SECOND * 45, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER, harWindowsPerIntervention, readingsPeriodRate);
+
+        reader = new SmartphoneFixesFileReader(":P");
     }
 
     /***
@@ -235,6 +243,7 @@ public class MainActivity extends Activity {
         StayPointRepository repository = new StayPointRepository(this, 500);
         SQLiteHelper helper = new SQLiteHelper(this);
         helper.clearDatabase();
+        helper.recreateDatabase();
     }
 
     private void clickStartMobilityTracker(View view) {
@@ -243,5 +252,29 @@ public class MainActivity extends Activity {
 
     private void clickStopMobilityTracker(View view) {
         mobilityHub.stopMobilityTracking();
+    }
+
+    private void clickBtnLearnStayPoints(View view) {
+        // Pass over the row 614 (on after 613, the last of the stay point), so it can learn Home 1, Home 2 and Cinvestav.
+
+        for (int i = 0; i < LAST_LEARNING_FIX; i++) {
+            Location location = reader.readLine();
+            mobilityHub.onLocationChanged(location);
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void clikBtnGoToNextStayPoint(View view) {
+        // The last row should be the 3254 (one after the end of the last staypoint before the phone turned off
+        int nextBeginningIndexOfStayPoint = 4;
+        for (int i = 0; i < STARTING_ROWS_OF_STAY_POINT.length; i++) {
+            Location location = reader.readLine();
+
+        }
+
     }
 }

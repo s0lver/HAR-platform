@@ -19,22 +19,27 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/lstActivities" android:layout_weight="1" android:spinnerMode="dialog"/>
     </LinearLayout>
-    <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start collection"
-            android:id="@+id/btnStartCollection" android:layout_gravity="center_horizontal"
-            android:enabled="false"
-            android:onClick="clickStartCollection" android:layout_marginTop="20dp"/>
-    <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop collection"
-            android:id="@+id/btnStopCollection" android:layout_gravity="center_horizontal"
-            android:enabled="false"
-            android:onClick="clickStopCollection"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:gravity="center">
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start collection"
+                android:id="@+id/btnStartCollection" android:layout_gravity="center_horizontal"
+                android:enabled="true"
+                android:onClick="clickStartCollection"/>
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop collection"
+                android:id="@+id/btnStopCollection" android:layout_gravity="center_horizontal"
+                android:enabled="true"
+                android:onClick="clickStopCollection"/>
+    </LinearLayout>
     <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
@@ -43,43 +48,72 @@
             android:id="@+id/btnTrainNaiveBayes" android:layout_gravity="center_horizontal"
             android:enabled="false"
             android:onClick="clickTrainNaiveBayes"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:gravity="center">
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start classification"
+                android:id="@+id/btnStartClassification" android:layout_gravity="center_horizontal"
+                android:enabled="true"
+                android:onClick="clickStartClassification"/>
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop classification"
+                android:id="@+id/btnStopClassification" android:layout_gravity="center_horizontal"
+                android:enabled="true"
+                android:onClick="clickStopClassification"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:gravity="center">
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start Mobility Tracker"
+                android:id="@+id/btnClickStartMobilityTracker" android:layout_gravity="center_horizontal"
+                android:onClick="clickStartMobilityTracker"/>
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop Mobility Tracker"
+                android:id="@+id/btnClickStopMobilityTracker" android:layout_gravity="center_horizontal"
+                android:onClick="clickStopMobilityTracker"/>
+    </LinearLayout>
     <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start classification"
-            android:id="@+id/btnStartClassification" android:layout_gravity="center_horizontal"
-            android:enabled="false"
-            android:onClick="clickStartClassification"/>
-    <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop classification"
-            android:id="@+id/btnStopClassification" android:layout_gravity="center_horizontal"
-            android:enabled="false"
-            android:onClick="clickStopClassification"/>
-    <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Do stuff with DB"
+            android:text="Reset database"
             android:id="@+id/btnClickStuff" android:layout_gravity="center_horizontal"
             android:enabled="false"
             android:onClick="clickDoStuffWithDb"/>
-    <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start Mobility Tracker"
-            android:id="@+id/btnClickStartMobilityTracker" android:layout_gravity="center_horizontal"
-            android:onClick="clickStartMobilityTracker"/>
-    <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop Mobility Tracker"
-            android:id="@+id/btnClickStopMobilityTracker" android:layout_gravity="center_horizontal"
-            android:onClick="clickStopMobilityTracker"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:gravity="center">
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Learn StayPoints"
+                android:id="@+id/btnLearnStayPoints" android:layout_gravity="center_horizontal"
+                android:onClick="clickBtnLearnStayPoints"/>
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get into next StayPoint"
+                android:id="@+id/btnGoToNextStayPoint" android:layout_gravity="center_horizontal"
+                android:onClick="clikBtnGoToNextStayPoint"/>
+    </LinearLayout>
 </LinearLayout>
 

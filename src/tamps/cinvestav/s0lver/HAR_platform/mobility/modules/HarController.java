@@ -80,7 +80,7 @@ public class HarController implements MobilityListener, NaiveBayesListener{
 
     @Override
     public void onUserArrivingStayPoint(DbStayPoint stayPoint, Date timeOfArrival) {
-        Log.i(this.getClass().getSimpleName(), "User is arriving at a StayPoint @ " + Constants.SIMPLE_DATE_FORMAT.format(timeOfArrival));
+        Log.i(this.getClass().getSimpleName(), "User is arriving at a StayPoint @ " + Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(timeOfArrival));
         Log.i(this.getClass().getSimpleName(), "StayPoint is " + stayPoint);
         Log.i(this.getClass().getSimpleName(), "Starting HAR module");
         launchHarSystem();
@@ -88,7 +88,7 @@ public class HarController implements MobilityListener, NaiveBayesListener{
 
     @Override
     public void onUserLeavingStayPoint(DbStayPoint stayPoint, Date timeOfDeparture) {
-        Log.i(this.getClass().getSimpleName(), "User is leaving a StayPoint @ " + Constants.SIMPLE_DATE_FORMAT.format(timeOfDeparture));
+        Log.i(this.getClass().getSimpleName(), "User is leaving a StayPoint @ " + Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(timeOfDeparture));
         Log.i(this.getClass().getSimpleName(), "Stopping HAR module");
         stopHarSystem();
     }

@@ -102,8 +102,8 @@ public class StayPointsDal {
         ContentValues values = new ContentValues();
         values.put(SQLiteHelper.COLUMN_LATITUDE, stayPoint.getStayPoint().getLatitude());
         values.put(SQLiteHelper.COLUMN_LONGITUDE, stayPoint.getStayPoint().getLongitude());
-        values.put(SQLiteHelper.COLUMN_ARRIVAL_TIME, Constants.SIMPLE_DATE_FORMAT.format(stayPoint.getStayPoint().getArrivalTime()));
-        values.put(SQLiteHelper.COLUMN_DEPARTURE_TIME, Constants.SIMPLE_DATE_FORMAT.format(stayPoint.getStayPoint().getDepartureTime()));
+        values.put(SQLiteHelper.COLUMN_ARRIVAL_TIME, Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(stayPoint.getStayPoint().getArrivalTime()));
+        values.put(SQLiteHelper.COLUMN_DEPARTURE_TIME, Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(stayPoint.getStayPoint().getDepartureTime()));
         values.put(SQLiteHelper.COLUMN_VISIT_COUNT, stayPoint.getVisitCount());
 
         return values;
@@ -120,8 +120,8 @@ public class StayPointsDal {
             long id = cursor.getLong(0);
             double latitude = cursor.getDouble(1);
             double longitude = cursor.getDouble(2);
-            Date arrivalTime = Constants.SIMPLE_DATE_FORMAT.parse(cursor.getString(3));
-            Date departureTime = Constants.SIMPLE_DATE_FORMAT.parse(cursor.getString(4));
+            Date arrivalTime = Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.parse(cursor.getString(3));
+            Date departureTime = Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.parse(cursor.getString(4));
             int visitCount = cursor.getInt(5);
 
             return new DbStayPoint(id, latitude, longitude, arrivalTime, departureTime, 0, visitCount);
