@@ -117,7 +117,8 @@ public class ActivitiesInStayPointDal {
     public ArrayList<DbActivityInStayPoint> getAllByVisit(long idVisit) {
         ArrayList<DbActivityInStayPoint> dbActivities = new ArrayList<DbActivityInStayPoint>();
         this.open();
-        Cursor cursor = database.query(SQLiteHelper.TABLE_STAY_POINTS, allActivitiesTableColumns, SQLiteHelper.COLUMN_VISIT_ID, new String[]{String.valueOf(idVisit)}, null, null, null);
+//        Cursor cursor = database.query(SQLiteHelper.TABLE_ACTIVITIES, allActivitiesTableColumns, SQLiteHelper.COLUMN_VISIT_ID, new String[]{String.valueOf(idVisit)}, null, null, null);
+        Cursor cursor = database.query(SQLiteHelper.TABLE_ACTIVITIES, allActivitiesTableColumns, SQLiteHelper.COLUMN_VISIT_ID + " = " + idVisit, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

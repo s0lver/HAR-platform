@@ -1,6 +1,7 @@
 package tamps.cinvestav.s0lver.HAR_platform.mobility.entities;
 
 import android.location.Location;
+import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants;
 
@@ -59,10 +60,11 @@ public class LocationAnalyzer {
      */
     public static DbStayPoint findClosestStayPoint(Location location, ArrayList<DbStayPoint> dbStayPoints, double minimumDistanceThreshold) {
         DbStayPoint closestStayPoint = null;
-        double closestDistance = 0;
+        double closestDistance = Double.MAX_VALUE;
         for (DbStayPoint dbStayPoint : dbStayPoints) {
             Location spAsLocation = dbStayPoint.getStayPoint().convertStayPointToLocation();
             float distance = location.distanceTo(spAsLocation);
+//            Log.i(LocationAnalyzer.class.getSimpleName(), "Distance between " + spAsLocation + " and " + location + "is " + distance);
 
             if (distance <= closestDistance) {
                 closestDistance = distance;

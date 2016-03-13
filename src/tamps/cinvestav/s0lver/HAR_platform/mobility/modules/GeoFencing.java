@@ -2,6 +2,7 @@ package tamps.cinvestav.s0lver.HAR_platform.mobility.modules;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.MobilityListener;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.LocationAnalyzer;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
@@ -58,22 +59,24 @@ public class GeoFencing {
         if (currentStayPoint != null) {
             isUserAtStayPoint = true;
             if (isUserArrivingStayPoint()) {
+                Log.i(this.getClass().getSimpleName(), "Identified, user arriving @ StayPoint " + currentStayPoint);
                 // 1. Add the visit information for this StayPoint
                 DbStayPointVisit visit = buildVisit(location);
                 currentVisit = visitRepository.add(visit);
                 // 2. Update the visit information of this StayPoint
                 stayPointRepository.update(currentStayPoint);
                 // 3. Notify that the user is arriving, so that HAR can be triggered...
-                harController.onUserArrivingStayPoint(currentStayPoint, new Date(location.getTime()));
+//                harController.onUserArrivingStayPoint(currentStayPoint, new Date(location.getTime()));
             }
         } else {
             isUserAtStayPoint = false;
             if (isUserLeavingStayPoint()) {
+                Log.i(this.getClass().getSimpleName(), "Identified, user leaving the StayPoint " + previousStayPoint);
                 // 1. Update the visit information for this StayPoint
                 currentVisit.setDepartureTime(new Date(location.getTime()));
                 visitRepository.updateVisitInformation(currentVisit);
                 // 2. Notifies that the user is leaving, so that HAR can be stopped...
-                harController.onUserLeavingStayPoint(previousStayPoint, currentVisit.getDepartureTime());
+//                harController.onUserLeavingStayPoint(previousStayPoint, currentVisit.getDepartureTime());
             }
         }
     }

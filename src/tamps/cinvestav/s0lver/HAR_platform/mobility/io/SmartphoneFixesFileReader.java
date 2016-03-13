@@ -70,6 +70,8 @@ public class SmartphoneFixesFileReader {
                 e.printStackTrace();
                 throw new RuntimeException("I couldn't parse the date, and I hate checked exceptions");
             }
+        }else{
+            fix = new Location("null");
         }
         return fix;
     }

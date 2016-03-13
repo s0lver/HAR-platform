@@ -56,7 +56,7 @@ public class HarController implements MobilityListener, NaiveBayesListener{
      */
     private void stopHarSystem() {
         runningCount = 0;
-        Log.i(GeoFencing.class.getSimpleName(), "Classification stopped");
+        Log.i(this.getClass().getSimpleName(), "HAR system stopped");
         accelerometerHub.stopClassification();
         // Next lines should be ignored if we want a permanent classification
         harTask.cancel();
@@ -72,7 +72,7 @@ public class HarController implements MobilityListener, NaiveBayesListener{
         return new TimerTask() {
             @Override
             public void run() {
-                Log.i(GeoFencing.class.getSimpleName(), "Classification started");
+                Log.i(GeoFencing.class.getSimpleName(), "HAR system started");
                 accelerometerHub.startClassification(harClassificationListener);
             }
         };
@@ -80,16 +80,15 @@ public class HarController implements MobilityListener, NaiveBayesListener{
 
     @Override
     public void onUserArrivingStayPoint(DbStayPoint stayPoint, Date timeOfArrival) {
-        Log.i(this.getClass().getSimpleName(), "User is arriving at a StayPoint @ " + Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(timeOfArrival));
+        Log.i(this.getClass().getSimpleName(), "Got notification of user arriving at a StayPoint @ " + Constants.RECORDS_SIMPLE_DATE_FORMAT.format(timeOfArrival));
         Log.i(this.getClass().getSimpleName(), "StayPoint is " + stayPoint);
-        Log.i(this.getClass().getSimpleName(), "Starting HAR module");
         launchHarSystem();
     }
 
     @Override
     public void onUserLeavingStayPoint(DbStayPoint stayPoint, Date timeOfDeparture) {
-        Log.i(this.getClass().getSimpleName(), "User is leaving a StayPoint @ " + Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(timeOfDeparture));
-        Log.i(this.getClass().getSimpleName(), "Stopping HAR module");
+        Log.i(this.getClass().getSimpleName(), "Got notification of user leaving a StayPoint @ " + Constants.RECORDS_SIMPLE_DATE_FORMAT.format(timeOfDeparture));
+        Log.i(this.getClass().getSimpleName(), "StayPoint is " + stayPoint);
         stopHarSystem();
     }
 

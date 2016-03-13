@@ -50,6 +50,7 @@ public class StayPointsDal {
      */
     public DbStayPoint add(StayPoint stayPoint) {
         this.open();
+        Log.i(this.getClass().getSimpleName(), "Adding " + stayPoint.toCSV());
         DbStayPoint dbStayPoint = new DbStayPoint(0, 1, stayPoint);
         ContentValues values = buildContentValues(dbStayPoint);
 

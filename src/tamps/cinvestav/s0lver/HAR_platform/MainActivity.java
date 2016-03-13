@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,7 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointReposito
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.SQLiteHelper;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -57,9 +59,12 @@ public class MainActivity extends Activity {
         prepareSoundPlayers();
         prepareSpinners();
         accelerometerHub = new AccelerometerHub(this);
-        mobilityHub = new MobilityHub(this, Constants.ONE_SECOND * 45, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER, harWindowsPerIntervention, readingsPeriodRate);
+        mobilityHub = new MobilityHub(this, Constants.ONE_MINUTE * 45, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER, harWindowsPerIntervention, readingsPeriodRate);
 
-        reader = new SmartphoneFixesFileReader(":P");
+        String path = Environment.getExternalStorageDirectory() + File.separator + "har-system" + File.separator+ "input-records.csv";
+        Log.i(this.getClass().getSimpleName(), "Trying to open path " + path);
+        reader = new SmartphoneFixesFileReader(path);
+
     }
 
     /***
@@ -246,35 +251,60 @@ public class MainActivity extends Activity {
         helper.recreateDatabase();
     }
 
-    private void clickStartMobilityTracker(View view) {
+    public void clickStartMobilityTracker(View view) {
         mobilityHub.startMobilityTracking();
     }
 
-    private void clickStopMobilityTracker(View view) {
+    public void clickStopMobilityTracker(View view) {
         mobilityHub.stopMobilityTracking();
     }
 
-    private void clickBtnLearnStayPoints(View view) {
-        // Pass over the row 614 (on after 613, the last of the stay point), so it can learn Home 1, Home 2 and Cinvestav.
 
+    private int currentRow = 0;
+    private int currentStartingRowIndex = 0;
+    public void clickBtnLearnStayPoints(View view) {
+        // First, restart database
+        clickDoStuffWithDb(view);
+        Log.i(this.getClass().getSimpleName(), "Trying to learn");
+        // Pass over the row 614 (on after 613, the last of the stay point), so it can learn Home 1, Home 2 and Cinvestav.
         for (int i = 0; i < LAST_LEARNING_FIX; i++) {
             Location location = reader.readLine();
-            mobilityHub.onLocationChanged(location);
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            Log.i(this.getClass().getSimpleName(), "Passing row " + i);
+            currentRow = i;
+            if (location.getProvider().equals("null")) {
+                Log.i(this.getClass().getSimpleName(), "Location not obtained at row " + i);
+                continue;
             }
+            mobilityHub.onLocationChanged(location);
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
+
+        currentRow = LAST_LEARNING_FIX;
+        currentStartingRowIndex = 3;
+        Log.i(this.getClass().getSimpleName(), "I just learned the first StayPoints");
     }
 
-    private void clikBtnGoToNextStayPoint(View view) {
-        // The last row should be the 3254 (one after the end of the last staypoint before the phone turned off
-        int nextBeginningIndexOfStayPoint = 4;
-        for (int i = 0; i < STARTING_ROWS_OF_STAY_POINT.length; i++) {
-            Location location = reader.readLine();
-
+    public void clikBtnGoToNextStayPoint(View view) {
+        if (currentStartingRowIndex == STARTING_ROWS_OF_STAY_POINT.length) {
+            Toast.makeText(MainActivity.this, "You just passed the last StayPoint", Toast.LENGTH_SHORT).show();
+            return;
         }
 
+        // Should be less than STARTING... + 2, 1 bc 0 based and 1 bc is INSIDE the SP
+        int stopCriteria = STARTING_ROWS_OF_STAY_POINT[currentStartingRowIndex] + 2;
+        for (int i = currentRow; i < stopCriteria; i++) {
+
+            Log.i(this.getClass().getSimpleName(), "Passing row " + i);
+            Location location = reader.readLine();
+            mobilityHub.onLocationChanged(location);
+        }
+        currentRow = stopCriteria;
+        Log.i(this.getClass().getSimpleName(), "The user is at the entrance of StayPoint " + currentStartingRowIndex + " (0 based)");
+//        currentRow = STARTING_ROWS_OF_STAY_POINT[currentStartingRowIndex];
+        currentStartingRowIndex++;
     }
 }

@@ -46,7 +46,6 @@ public class MobilityHub implements LocationListener{
 
     @Override
     public void onLocationChanged(Location location) {
-
         stayPointDetector.analyzeLocation(location);
         geoFencing.evaluateMobility(location);
     }

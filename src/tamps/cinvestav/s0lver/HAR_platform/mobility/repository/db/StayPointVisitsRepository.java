@@ -1,6 +1,7 @@
 package tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db;
 
 import android.content.Context;
+import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.har.activities.Activities;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbActivityInStayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPointVisit;
@@ -28,14 +29,12 @@ public class StayPointVisitsRepository {
 
     /***
      * Updates the information of the DbStayPointVisit and stores it.
-     * The information updated is related to the activity performed duringthe visit to the StayPoint.
+     * The information updated is related to the activity performed during the visit to the StayPoint.
      * @param visit The DbStayPointVisit object to update.
      * @return A DbStayPointVisit with the updated information
      */
     public DbStayPointVisit updateVisitInformation(DbStayPointVisit visit) {
         ActivitiesInStayPointDal activitiesDal = new ActivitiesInStayPointDal(context);
-
-//        visit.setDepartureTime(new Date(System.currentTimeMillis()));
 
         ArrayList<DbActivityInStayPoint> activities = activitiesDal.getAllByVisit(visit.getId());
 
@@ -55,9 +54,19 @@ public class StayPointVisitsRepository {
             }
         }
 
-        visit.setStaticPercentage(frequencyStatic / activities.size());
-        visit.setWalkingPercentage(frequencyWalking / activities.size());
-        visit.setRunningPercentage(frequencyRunning / activities.size());
+        int amountOfActivities = activities.size();
+        Log.i(this.getClass().getSimpleName(), "Amount of activities is " + amountOfActivities);
+
+        double staticPercentage = 0, walkingPercentage = 0, runningPercentage = 0;
+        if (amountOfActivities != 0) {
+            staticPercentage = frequencyStatic / amountOfActivities;
+            walkingPercentage = frequencyWalking / amountOfActivities;
+            runningPercentage = frequencyRunning / amountOfActivities;
+        }
+
+        visit.setStaticPercentage(staticPercentage);
+        visit.setWalkingPercentage(walkingPercentage);
+        visit.setRunningPercentage(runningPercentage);
 
         visit = visitsDal.update(visit);
         return visit;
