@@ -7,11 +7,10 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbAct
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPointVisit;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class StayPointVisitsRepository {
-    private Context context;
-    private StayPointVisitsDal visitsDal;
+    private final Context context;
+    private final StayPointVisitsDal visitsDal;
 
     public StayPointVisitsRepository(Context context) {
         this.context = context;

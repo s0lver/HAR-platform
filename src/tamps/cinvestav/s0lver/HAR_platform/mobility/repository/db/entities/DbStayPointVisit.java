@@ -3,7 +3,7 @@ package tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities;
 import java.util.Date;
 
 /***
- * Models a Visit to a StayPoint and the activy information of such visit.
+ * Models a Visit to a StayPoint and the activity information of such visit.
  */
 public class DbStayPointVisit {
     private long id;

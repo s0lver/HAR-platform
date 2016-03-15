@@ -19,8 +19,8 @@ import java.util.Date;
  */
 public class StayPointsDal {
     private SQLiteDatabase database;
-    private SQLiteHelper dbHelper;
-    private String[] allStayPointsTableColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_LATITUDE, SQLiteHelper.COLUMN_LONGITUDE,
+    private final SQLiteHelper dbHelper;
+    private final String[] allStayPointsTableColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_LATITUDE, SQLiteHelper.COLUMN_LONGITUDE,
             SQLiteHelper.COLUMN_ARRIVAL_TIME, SQLiteHelper.COLUMN_DEPARTURE_TIME, SQLiteHelper.COLUMN_VISIT_COUNT};
 
     public StayPointsDal(Context context) {
@@ -95,7 +95,7 @@ public class StayPointsDal {
 
     /***
      * Builds a ContentValues dictionary? from the values of the DbStayPoint reference
-     * @param stayPoint
+     * @param stayPoint The DbStayPoint object to create ContentValues from
      * @return A ContentValues object with the mapped information from the DbStayPoint reference
      * @see DbStayPoint
      */
@@ -158,7 +158,7 @@ public class StayPointsDal {
      * @see DbStayPoint
      */
     public ArrayList<DbStayPoint> getAll() {
-        ArrayList<DbStayPoint> dbStayPoints = new ArrayList<DbStayPoint>();
+        ArrayList<DbStayPoint> dbStayPoints = new ArrayList<>();
         this.open();
         Cursor cursor = database.query(SQLiteHelper.TABLE_STAY_POINTS, allStayPointsTableColumns, null, null, null, null, null);
 

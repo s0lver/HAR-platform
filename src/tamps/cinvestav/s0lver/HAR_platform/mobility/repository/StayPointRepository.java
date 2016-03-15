@@ -11,9 +11,9 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbSta
 import java.util.ArrayList;
 
 public class StayPointRepository {
-    private double distanceRadio;
+    private final double distanceRadio;
 
-    private StayPointsDal stayPointsDal;
+    private final StayPointsDal stayPointsDal;
 
     public StayPointRepository(Context context, double distanceRadio) {
         this.distanceRadio = distanceRadio;

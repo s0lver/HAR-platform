@@ -16,9 +16,9 @@ import java.io.File;
 import java.util.Date;
 
 public class LocationLogger implements LocationListener{
-    private LocationReader locationReader;
-    private Date startTime;
-    private BatteryStatusVerifier batteryStatusVerifier;
+    private final LocationReader locationReader;
+    private final Date startTime;
+    private final BatteryStatusVerifier batteryStatusVerifier;
 
     public LocationLogger(Context context) {
         this.locationReader = new LocationReader(context, this);

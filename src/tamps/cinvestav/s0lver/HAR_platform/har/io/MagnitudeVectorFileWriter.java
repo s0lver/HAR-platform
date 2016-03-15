@@ -7,10 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class MagnitudeVectorFileWriter {
-    private File vectorFile;
-    private double[] magnitudeVector;
-    private int currentRun;
+class MagnitudeVectorFileWriter {
+    private final File vectorFile;
+    private final double[] magnitudeVector;
+    private final int currentRun;
 
     public MagnitudeVectorFileWriter(int currentRun, String filepath, double[] magnitudeVector) {
         this.vectorFile = new File(filepath);
@@ -19,7 +19,7 @@ public class MagnitudeVectorFileWriter {
     }
 
     public void writeFile() {
-        PrintWriter pw = null;
+        PrintWriter pw;
         try {
             pw = new PrintWriter(new FileWriter(vectorFile, true));
             for (double v : magnitudeVector) {

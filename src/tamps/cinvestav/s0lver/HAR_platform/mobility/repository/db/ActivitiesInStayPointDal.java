@@ -19,8 +19,8 @@ import java.util.Date;
 public class ActivitiesInStayPointDal {
     private final Context context;
     private SQLiteDatabase database;
-    private SQLiteHelper dbHelper;
-    private String[] allActivitiesTableColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_VISIT_ID, SQLiteHelper.COLUMN_ACTIVITY_TYPE,
+    private final SQLiteHelper dbHelper;
+    private final String[] allActivitiesTableColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_VISIT_ID, SQLiteHelper.COLUMN_ACTIVITY_TYPE,
             SQLiteHelper.COLUMN_TIMESTAMP};
 
     public ActivitiesInStayPointDal(Context context) {
@@ -62,7 +62,7 @@ public class ActivitiesInStayPointDal {
 
     /***
      * Builds a ContentValues dictionary? from the values of the DbActivityInStayPoint reference
-     * @param activity
+     * @param activity    The DbActivityInStayPoint object to create ContentValues from.
      * @return A ContentValues object with the mapped information from the DbStayPoint reference
      * @see DbActivityInStayPoint
      */
@@ -115,7 +115,7 @@ public class ActivitiesInStayPointDal {
      * @see DbActivityInStayPoint
      */
     public ArrayList<DbActivityInStayPoint> getAllByVisit(long idVisit) {
-        ArrayList<DbActivityInStayPoint> dbActivities = new ArrayList<DbActivityInStayPoint>();
+        ArrayList<DbActivityInStayPoint> dbActivities = new ArrayList<>();
         this.open();
 //        Cursor cursor = database.query(SQLiteHelper.TABLE_ACTIVITIES, allActivitiesTableColumns, SQLiteHelper.COLUMN_VISIT_ID, new String[]{String.valueOf(idVisit)}, null, null, null);
         Cursor cursor = database.query(SQLiteHelper.TABLE_ACTIVITIES, allActivitiesTableColumns, SQLiteHelper.COLUMN_VISIT_ID + " = " + idVisit, null, null, null, null);

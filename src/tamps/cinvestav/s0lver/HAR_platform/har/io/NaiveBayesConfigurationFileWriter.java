@@ -14,7 +14,7 @@ import java.io.PrintWriter;
  * @see NaiveBayesConfiguration
  */
 public class NaiveBayesConfigurationFileWriter {
-    private NaiveBayesConfiguration naiveBayesConfiguration;
+    private final NaiveBayesConfiguration naiveBayesConfiguration;
 
 
     public NaiveBayesConfigurationFileWriter(NaiveBayesConfiguration naiveBayesConfiguration) {
@@ -29,7 +29,7 @@ public class NaiveBayesConfigurationFileWriter {
             String filePath = Environment.getExternalStorageDirectory() + File.separator
                     + "har-system" + File.separator + "training-configuration.csv";
             PrintWriter pw = new PrintWriter(new FileWriter(filePath));
-            for (int i = 0; i < Constants.UNIQUE_CLASES; i++) {
+            for (int i = 0; i < Constants.UNIQUE_CLASSES; i++) {
                 // 1. Probability of this class
                 pw.println(probabilityPerClass[i]);
                 // 2. Means

@@ -6,9 +6,7 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class SmartphoneFixesFileReader {
@@ -18,10 +16,25 @@ public class SmartphoneFixesFileReader {
     private final int ACCURACY = 4;
     private final int SPEED = 5;
     private final int TIMESTAMP = 6;
-    protected String path;
-
 
     private Scanner scanner;
+
+    public SmartphoneFixesFileReader(String path) {
+        try {
+            scanner = new Scanner(new FileReader(path));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("I couldn't open the file. Additionally I hate checked exceptions");
+        }
+    }
+
+    public Location readLine() {
+        Location location = null;
+        if (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            location = processLine(line);
+        }
+        return location;
+    }
 
     public ArrayList<Location> readFile() {
         ArrayList<Location> gpsFixes = new ArrayList<>();
@@ -36,26 +49,8 @@ public class SmartphoneFixesFileReader {
         return gpsFixes;
     }
 
-    public Location readLine() {
-        Location location = null;
-        if (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            location = processLine(line);
-        }
-        return location;
-    }
-
-    public SmartphoneFixesFileReader(String path) {
-        this.path = path;
-        try {
-            scanner = new Scanner(new FileReader(path));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("I couldn't open the file. Additionally I hate checked exceptions");
-        }
-    }
-
-    protected Location processLine(String line) {
-        Location fix = null;
+    private Location processLine(String line) {
+        Location fix;
         String[] slices = line.split(",");
         if (slices[0].equals("Si")) {
             try {

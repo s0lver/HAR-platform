@@ -14,8 +14,8 @@ import java.io.PrintWriter;
  * @see ActivityPattern
  */
 public class PatternsFileWriter {
-    private File patternsFile;
-    private ActivityPattern pattern;
+    private final File patternsFile;
+    private final ActivityPattern pattern;
 
     public PatternsFileWriter(String filepath, ActivityPattern pattern) {
         this.patternsFile = new File(filepath);
@@ -23,7 +23,7 @@ public class PatternsFileWriter {
     }
 
     public void writeFile() {
-        PrintWriter pw = null;
+        PrintWriter pw;
         try {
             pw = new PrintWriter(new FileWriter(patternsFile, true));
             pw.println(pattern.getType() + "," + pattern.getStandardDeviation() + "," + pattern.getMean());

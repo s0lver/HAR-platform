@@ -14,9 +14,9 @@ import java.util.ArrayList;
  * @see AccelerometerReading
  */
 public class AccelerationsFileWriter {
-    private File accelerationsFile;
-    private ArrayList<AccelerometerReading> data;
-    private int currentRun;
+    private final File accelerationsFile;
+    private final ArrayList<AccelerometerReading> data;
+    private final int currentRun;
 
     public AccelerationsFileWriter(int currentRun, String filepath, ArrayList<AccelerometerReading> data) {
         this.data = data;
@@ -25,7 +25,7 @@ public class AccelerationsFileWriter {
     }
 
     public void writeFile(){
-        PrintWriter pw = null;
+        PrintWriter pw;
         try {
             pw = new PrintWriter(new FileWriter(accelerationsFile, true));
             for (AccelerometerReading reading : data) {

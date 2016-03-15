@@ -23,8 +23,6 @@ public class Constants {
      */
     public static final double MIN_DISTANCE_PARAMETER = 500;
 
-    public static final int HAR_WINDOWS_PER_INTERVETION = 5;
-
     /***
      * Standard date format for output of data (for instance, in file names).
      */

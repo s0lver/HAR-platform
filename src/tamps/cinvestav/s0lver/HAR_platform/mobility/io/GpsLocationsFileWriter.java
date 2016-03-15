@@ -27,7 +27,7 @@ public class GpsLocationsFileWriter {
     }
 
     public void writeFile(){
-        PrintWriter pw = null;
+        PrintWriter pw;
         try {
             pw = new PrintWriter(new FileWriter(locationsFile, true));
             String line = LocationAnalyzer.convertLocationToCsv(location);

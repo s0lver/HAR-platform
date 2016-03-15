@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /***
- * Preprocesses a list of AccelerometerReadings.
+ * Pre processes a list of AccelerometerReadings.
  * Internally builds a magnitude vector, at the end the produced output is
  * the mean and stdDev attributes of such magnitude vector.
  */
-public class ModuleAccelerometerPreprocessor {
+class ModuleAccelerometerPreprocessor {
     private ArrayList<AccelerometerReading> samplingWindow;
     private double[] magnitudeVector;
     private double mean;

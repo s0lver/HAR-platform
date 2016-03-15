@@ -6,9 +6,9 @@ package tamps.cinvestav.s0lver.HAR_platform.har.classifiers;
  * @see NaiveBayesClassifier
  */
 public class NaiveBayesConfiguration {
-    private double[] probabilityPerClass;
-    private double[][] meanPerClass;
-    private double[][] variancePerClass;
+    private final double[] probabilityPerClass;
+    private final double[][] meanPerClass;
+    private final double[][] variancePerClass;
 
     /***
      * Constructor (The order of classes in each vector must be maintained)

@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /***
- * Models a StayPoint, which is a geographical region of a determined size, where the user spents a given amount of time.
+ * Models a StayPoint, which is a geographical region of a determined size, where the user spends a given amount of time.
  * It is also known as a frequent location, place-point of interest (POI).
  */
 public class StayPoint{

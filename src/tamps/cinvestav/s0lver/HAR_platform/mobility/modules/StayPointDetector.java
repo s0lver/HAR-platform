@@ -12,8 +12,8 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointReposito
  * @see ZhenAlgorithm
  */
 public class StayPointDetector{
-    private ZhenAlgorithm zhenAlgorithm;
-    private StayPointRepository stayPointRepository;
+    private final ZhenAlgorithm zhenAlgorithm;
+    private final StayPointRepository stayPointRepository;
 
     public StayPointDetector(Context context, long minimumTimeThreshold, double minimumDistanceThreshold) {
         this.zhenAlgorithm = new ZhenAlgorithm(minimumTimeThreshold, minimumDistanceThreshold);

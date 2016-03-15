@@ -16,8 +16,8 @@ public class ZhenAlgorithm {
     private double sigmaLatitude;
     private double sigmaLongitude;
     private Date arrivalTime, departureTime;
-    private double distanceThreshold;
-    private long minTimeThreshold;
+    private final double distanceThreshold;
+    private final long minTimeThreshold;
 
 
     /***

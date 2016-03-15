@@ -20,17 +20,17 @@ import java.util.Date;
  * @see AccelerometerReadingListener
  */
 public class ModuleAccelerometerLogger implements AccelerometerReadingListener {
-    private int currentRun;
-    private String activityType;
-    private Date startTime;
-    private AccelerometerReader accelerometerReader;
-    private long sizeOfWindow;
+    private final int currentRun;
+    private final String activityType;
+    private final Date startTime;
+    private final AccelerometerReader accelerometerReader;
+    private final long sizeOfWindow;
 
     /***
      * Creates a ModuleAccelerometerLogger instance with the specified window size
      * @param context Context for accessing the Sensor-Sensing system service
      * @param activityType Type of activity (for filename)
-     * @param sizeOfWindow The size of the window on which data will be allocated, this is in millisecods
+     * @param sizeOfWindow The size of the window on which data will be allocated, this is in milliseconds
      */
     public ModuleAccelerometerLogger(Context context, String activityType, long sizeOfWindow) {
         this.activityType = activityType;

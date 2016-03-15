@@ -15,7 +15,7 @@ import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
  * @see ModuleAccelerometerClassifier
  */
 public class AccelerometerHub {
-    private Context context;
+    private final Context context;
     private ModuleAccelerometerLogger logger;
     private ModuleAccelerometerClassifier classifier;
 

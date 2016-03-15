@@ -16,13 +16,13 @@ import java.util.TimerTask;
  * Connects to hardware and reads data from the accelerometer
  */
 public class AccelerometerReader implements SensorEventListener{
-    private SensorManager sensorManager;
-    private Sensor sensor;
+    private final SensorManager sensorManager;
+    private final Sensor sensor;
     private ArrayList<AccelerometerReading> buffer;
     private Timer timerReadings;
     private TimerTask timerTaskReading;
-    private long sizeOfWindow;
-    private AccelerometerReadingListener readingListener;
+    private final long sizeOfWindow;
+    private final AccelerometerReadingListener readingListener;
 
     public AccelerometerReader(Context context, AccelerometerReadingListener readingListener, long sizeOfWindow) {
         this.readingListener = readingListener;

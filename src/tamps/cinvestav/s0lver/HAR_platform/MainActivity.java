@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
     private MediaPlayer mediaPlayerWalking;
     private MediaPlayer mediaPlayerRunning;
 
-    AccelerometerHub accelerometerHub;
+    private AccelerometerHub accelerometerHub;
     private boolean readingInProgress;
     private boolean classificationInProgress;
     private Spinner lstActivities;
@@ -43,11 +43,12 @@ public class MainActivity extends Activity {
     private final int HAR_WINDOWS_PER_INTERVENTION = 5;
     private final long readingsPeriodRate = tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.ONE_MINUTE;
 
-    private final int[] STARTING_ROWS_OF_STAY_POINT = new int[]{1, 278, 351, 653, 801, 955, 1050, 1122, 1363, 1543, 1700, 1778, 1952, 2152, 2648, 2802, 2948};
+
+    private SmartphoneFixesFileReader reader;
+    //    private final int LAST_FIX = 3254;
+    //    private final int[] STARTING_ROWS_OF_STAY_POINT = new int[]{1, 278, 351, 653, 801, 955, 1050, 1122, 1363, 1543, 1700, 1778, 1952, 2152, 2648, 2802, 2948};
     private final int[] INDICES_OF_VISITS_TO_STAY_POINTS = new int[]{630, 652, 932, 956, 1051, 1122, 1541, 1701, 1952, 2018, 2022, 2152, 2555, 2944, 2948};
     private final int LAST_LEARNING_FIX = 614;
-    private final int LAST_FIX = 3254;
-    private SmartphoneFixesFileReader reader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -211,7 +212,7 @@ public class MainActivity extends Activity {
         };
     }
 
-    public void clickDoStuffWithDb(View view) {
+    private void clickDoStuffWithDb(View view) {
 //        simulateAdd();
         clearStayPointsTable();
 //        recreateDatabase();
@@ -219,7 +220,6 @@ public class MainActivity extends Activity {
     }
 
     private void recreateDatabase() {
-        StayPointRepository repository = new StayPointRepository(this, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER / 2);
         SQLiteHelper dbHelper = new SQLiteHelper(this);
         dbHelper.recreateDatabase();
     }
@@ -233,7 +233,6 @@ public class MainActivity extends Activity {
     }
 
     private void clearStayPointsTable() {
-        StayPointRepository repository = new StayPointRepository(this, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER / 2);
         SQLiteHelper helper = new SQLiteHelper(this);
         helper.clearDatabase();
         helper.recreateDatabase();
@@ -250,7 +249,7 @@ public class MainActivity extends Activity {
 
     private int currentRow = 0;
     private int currentIndexOfVisits = 0;
-    
+
     public void clickBtnLearnStayPoints(View view) {
         // First, restart database
         clickDoStuffWithDb(view);
@@ -277,7 +276,7 @@ public class MainActivity extends Activity {
         Log.i(this.getClass().getSimpleName(), "I just learned the first StayPoints");
     }
 
-    public void clikBtnGoToNextStayPoint(View view) {
+    public void clickBtnGoToNextStayPoint(View view) {
         if (currentIndexOfVisits == INDICES_OF_VISITS_TO_STAY_POINTS.length) {
             Toast.makeText(MainActivity.this, "You just passed the last StayPoint", Toast.LENGTH_SHORT).show();
             return;

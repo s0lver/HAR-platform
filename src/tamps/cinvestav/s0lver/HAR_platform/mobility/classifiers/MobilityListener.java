@@ -1,6 +1,5 @@
 package tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers;
 
-import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 
 import java.util.Date;

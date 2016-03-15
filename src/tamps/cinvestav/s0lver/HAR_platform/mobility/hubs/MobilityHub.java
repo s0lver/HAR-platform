@@ -4,8 +4,6 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.StayPointListener;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.hal.LocationReader;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.GeoFencing;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.LocationLogger;
@@ -15,10 +13,10 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.modules.StayPointDetector;
  * Controls the tracking of user, both in terms of location and activity
  */
 public class MobilityHub implements LocationListener{
-    private LocationReader locationReader;
-    private StayPointDetector stayPointDetector;
-    private GeoFencing geoFencing;
-    private LocationLogger locationLogger;
+    private final LocationReader locationReader;
+    private final StayPointDetector stayPointDetector;
+    private final GeoFencing geoFencing;
+    private final LocationLogger locationLogger;
 
     /***
      * Constructor

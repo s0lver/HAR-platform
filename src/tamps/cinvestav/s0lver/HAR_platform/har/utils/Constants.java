@@ -30,7 +30,7 @@ public class Constants {
     /***
      * Unique classes recognized by the platform (currently 3)
      */
-    public final static int UNIQUE_CLASES = 3;
+    public final static int UNIQUE_CLASSES = 3;
 
     /***
      * Total dimensions employed by the trainer - classifier

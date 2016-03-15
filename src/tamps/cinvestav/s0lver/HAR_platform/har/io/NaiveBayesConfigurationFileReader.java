@@ -14,9 +14,9 @@ import java.io.InputStreamReader;
  */
 public class NaiveBayesConfigurationFileReader {
     public static NaiveBayesConfiguration readFile(Context context) throws IOException {
-        double[] probabilityPerClass = new double[Constants.UNIQUE_CLASES];
-        double[][] meanPerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASES];
-        double[][] variancePerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASES];
+        double[] probabilityPerClass = new double[Constants.UNIQUE_CLASSES];
+        double[][] meanPerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASSES];
+        double[][] variancePerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASSES];
 
         String filepath = "training-configuration.csv";
         BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(filepath)));

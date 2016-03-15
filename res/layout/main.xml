@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:text="Get into next StayPoint"
                 android:id="@+id/btnGoToNextStayPoint" android:layout_gravity="center_horizontal"
-                android:onClick="clikBtnGoToNextStayPoint"/>
+                android:onClick="clickBtnGoToNextStayPoint"/>
     </LinearLayout>
 </LinearLayout>
 

@@ -25,12 +25,12 @@ public class HarController implements MobilityListener, NaiveBayesListener{
     private int runningCount;
     private Timer harTimer;
     private TimerTask harTask;
-    private NaiveBayesListener harClassificationListener;
+    private final NaiveBayesListener harClassificationListener;
     private final AccelerometerHub accelerometerHub;
     private final ActivitiesInStayPointDal activitiesDal;
-    private GeoFencing geoFencing;
-    private int harWindowsPerIntervention;
-    private long readingsPeriodRate;
+    private final GeoFencing geoFencing;
+    private final int harWindowsPerIntervention;
+    private final long readingsPeriodRate;
 
     /***
      * Constructor

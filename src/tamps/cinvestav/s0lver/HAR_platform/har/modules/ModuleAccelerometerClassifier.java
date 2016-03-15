@@ -26,11 +26,11 @@ import java.util.Date;
  * @see AccelerometerReadingListener
  */
 public class ModuleAccelerometerClassifier implements AccelerometerReadingListener {
-    private Date startTime;
-    private AccelerometerReader accelerometerReader;
-    private long sizeOfWindow;
+    private final Date startTime;
+    private final AccelerometerReader accelerometerReader;
+    private final long sizeOfWindow;
+    private final NaiveBayesListener naiveBayesListener;
     private NaiveBayesConfiguration naiveBayesConfiguration;
-    private NaiveBayesListener naiveBayesListener;
 
     /***
      * Creates a ModuleAccelerometerClassifier instance that will classify accelerometer data according to the specified
@@ -64,7 +64,7 @@ public class ModuleAccelerometerClassifier implements AccelerometerReadingListen
     }
 
     /***
-     * Starts the process of classification, triggering the reading of data, preprocessing and classification per se
+     * Starts the process of classification, triggering the reading of data, pre processing and classification per se
      */
     public void startClassification() {
         accelerometerReader.startReadings();
@@ -97,8 +97,8 @@ public class ModuleAccelerometerClassifier implements AccelerometerReadingListen
                 pattern.setType(predictedActivityType);
 
                 String filePrefix = "classifier_" + (sizeOfWindow / Constants.ONE_SECOND) + "_";
-                String filepath = Environment.getExternalStorageDirectory() + File.separator + "har-system" +
-                        File.separator + filePrefix + Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
+//                String filepath = Environment.getExternalStorageDirectory() + File.separator + "har-system" +
+// File.separator + filePrefix + Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
 
 //                PatternsFileWriter writer = new PatternsFileWriter(filepath, pattern);
 //                writer.writeFile();

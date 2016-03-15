@@ -7,10 +7,10 @@ import java.util.ArrayList;
 /***
  * Filters out the gravity from a set of accelerometer readings
  */
-public class GravityFilterer {
+class GravityFilterer {
     private static final float ALPHA = (float) 0.8;
     private float[] currentGravity;
-    private ArrayList<AccelerometerReading> accelerometerReadings;
+    private final ArrayList<AccelerometerReading> accelerometerReadings;
 
     public GravityFilterer(ArrayList<AccelerometerReading> accelerometerReadings) {
         this.accelerometerReadings = accelerometerReadings;

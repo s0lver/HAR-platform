@@ -1,7 +1,6 @@
 package tamps.cinvestav.s0lver.HAR_platform.mobility.entities;
 
 import android.location.Location;
-import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants;
 

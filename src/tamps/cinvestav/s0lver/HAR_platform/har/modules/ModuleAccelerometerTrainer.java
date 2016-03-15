@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * Module for training a Naive Bayes classifier.
  */
 public class ModuleAccelerometerTrainer {
-    private Context context;
+    private final Context context;
     private NaiveBayesConfiguration naiveBayesConfiguration;
 
     /***

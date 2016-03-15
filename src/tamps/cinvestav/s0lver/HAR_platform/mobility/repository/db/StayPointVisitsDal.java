@@ -15,8 +15,8 @@ import java.util.Date;
 
 class StayPointVisitsDal {
     private SQLiteDatabase database;
-    private SQLiteHelper dbHelper;
-    private String[] allVisitsTableColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_STAY_POINT_ID, SQLiteHelper.COLUMN_ARRIVAL_TIME,
+    private final SQLiteHelper dbHelper;
+    private final String[] allVisitsTableColumns = {SQLiteHelper.COLUMN_ID, SQLiteHelper.COLUMN_STAY_POINT_ID, SQLiteHelper.COLUMN_ARRIVAL_TIME,
             SQLiteHelper.COLUMN_DEPARTURE_TIME, SQLiteHelper.COLUMN_STATIC_PERCENTAGE,
             SQLiteHelper.COLUMN_WALKING_PERCENTAGE, SQLiteHelper.COLUMN_RUNNING_PERCENTAGE};
 
@@ -70,7 +70,7 @@ class StayPointVisitsDal {
 
     /***
      * Builds a ContentValues dictionary? from the values of the DbStayPointVisit reference
-     * @param visit
+     * @param visit The DbStayPoint object to create ContentValues from
      * @return A ContentValues object with the mapped information from the DbStayPointVisit reference
      * @see DbStayPointVisit
      */

@@ -15,15 +15,15 @@ public class BatteryStatusVerifier {
         this.context = context;
     }
 
-    public static final String STRING_BATT_LEVEL = "level";
-    public static final String STRING_BATT_SCALE = "scale";
-    public static final String STRING_BATT_PRESENT = "present";
-    public static final String STRING_BATT_TECH = "technology";
-    public static final String STRING_BATT_VOLTAGE = "voltage";
-    public static final String STRING_BATT_STATUS = "status";
-    public static final String STRING_BATT_PLUGGED = "plugged";
-    public static final String STRING_BATT_HEALTH = "health";
-    public static final String STRING_BATT_TEMPERATURE = "temperature";
+    private static final String STRING_BATT_LEVEL = "level";
+    private static final String STRING_BATT_SCALE = "scale";
+    private static final String STRING_BATT_PRESENT = "present";
+    private static final String STRING_BATT_TECH = "technology";
+    private static final String STRING_BATT_VOLTAGE = "voltage";
+    private static final String STRING_BATT_STATUS = "status";
+    private static final String STRING_BATT_PLUGGED = "plugged";
+    private static final String STRING_BATT_HEALTH = "health";
+    private static final String STRING_BATT_TEMPERATURE = "temperature";
 
     public BatteryStatus getBatteryStatus() {
         Intent batteryIntent = context.registerReceiver(null,

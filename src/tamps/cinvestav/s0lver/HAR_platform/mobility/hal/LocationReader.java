@@ -8,8 +8,8 @@ import android.location.LocationManager;
  * Connects to the GPS hardware and deliver readings
  */
 public class LocationReader {
-    private LocationManager locationManager;
-    private LocationListener locationListener;
+    private final LocationManager locationManager;
+    private final LocationListener locationListener;
 
     /***
      * Basic constructor
