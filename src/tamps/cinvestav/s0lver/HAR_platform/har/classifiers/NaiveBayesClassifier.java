@@ -14,9 +14,6 @@ public class NaiveBayesClassifier {
     private ArrayList<ActivityPattern> patterns;
     private NaiveBayesConfiguration nbConf;
 
-    double[] pdfPerClass;
-    double[] MAP;
-
     /***
      * Creates a Naive Bayes classifier using the specified training information
      * @param naiveBayesConfiguration The configuration "learned" and to be employed by the NB classifier
@@ -37,8 +34,8 @@ public class NaiveBayesClassifier {
         double[][] meanPerClass = nbConf.getMeanPerClass();
         double[] probabilityPerClass = nbConf.getProbabilityPerClass();
 
-        pdfPerClass = new double[Constants.UNIQUE_CLASES];
-        MAP = new double[Constants.UNIQUE_CLASES];
+        double[] pdfPerClass = new double[Constants.UNIQUE_CLASES];
+        double[] MAP = new double[Constants.UNIQUE_CLASES];
 
         for (int k = 0; k < Constants.UNIQUE_CLASES; k++) {
             probability[Constants.STD_DEV_DIMENSION][k] =
@@ -55,9 +52,9 @@ public class NaiveBayesClassifier {
             MAP[k] = probabilityPerClass[k] * pdfPerClass[k];
         }
 
-        for (int i = 0; i < Constants.UNIQUE_CLASES; i++) {
-            Log.i(this.getClass().getSimpleName(), "MAP[" + i + "] = " + MAP[i]);
-        }
+//        for (int i = 0; i < Constants.UNIQUE_CLASES; i++) {
+//            Log.i(this.getClass().getSimpleName(), "MAP[" + i + "] = " + MAP[i]);
+//        }
 
         return getHighestMap(MAP);
     }

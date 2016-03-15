@@ -22,7 +22,7 @@ public class AccelerometerReader implements SensorEventListener{
     private Timer timerReadings;
     private TimerTask timerTaskReading;
     private long sizeOfWindow;
-    AccelerometerReadingListener readingListener;
+    private AccelerometerReadingListener readingListener;
 
     public AccelerometerReader(Context context, AccelerometerReadingListener readingListener, long sizeOfWindow) {
         this.readingListener = readingListener;
@@ -95,7 +95,7 @@ public class AccelerometerReader implements SensorEventListener{
     /***
      * Inner class for detecting each time a sampling window is filled.
      */
-    class TimerTaskReadings extends TimerTask {
+    private class TimerTaskReadings extends TimerTask {
         @Override
         public void run() {
             timeoutReached();

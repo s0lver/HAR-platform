@@ -20,8 +20,7 @@ public class LocationAnalyzer {
      * @see Location
      */
     public static boolean isValidLocation(Location location) {
-        if ((location.getLatitude() == 0) && (location.getLongitude() == 0)) return false;
-        return true;
+        return !((location.getLatitude() == 0) && (location.getLongitude() == 0));
     }
 
     /***
@@ -51,14 +50,14 @@ public class LocationAnalyzer {
     }
 
     /***
-     * Finds the closest DbStayPoint to the given Location and within the minimumDistanceThreshold.
+     * Finds the closest DbStayPoint to the given Location and within the radio.
      * @param location The location to test against all learned StayPoints
      * @param dbStayPoints The list of stayPoints on which the nearest StayPoint should be found
-     * @param minimumDistanceThreshold The ratio to find the closest StayPoint
+     * @param radio The ratio to find the closest StayPoint
      * @return The closest StayPoint to the given Location, null if no StayPoint within the minDistanceParameter ratio is found.
      * @see Location
      */
-    public static DbStayPoint findClosestStayPoint(Location location, ArrayList<DbStayPoint> dbStayPoints, double minimumDistanceThreshold) {
+    public static DbStayPoint findClosestStayPoint(Location location, ArrayList<DbStayPoint> dbStayPoints, double radio) {
         DbStayPoint closestStayPoint = null;
         double closestDistance = Double.MAX_VALUE;
         for (DbStayPoint dbStayPoint : dbStayPoints) {
@@ -72,7 +71,7 @@ public class LocationAnalyzer {
             }
         }
 
-        if (minimumDistanceThreshold < closestDistance) {
+        if (radio < closestDistance) {
             closestStayPoint = null;
         }
 

@@ -11,12 +11,12 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbSta
 import java.util.ArrayList;
 
 public class StayPointRepository {
-    private double minimumDistanceThreshold;
+    private double distanceRadio;
 
     private StayPointsDal stayPointsDal;
 
-    public StayPointRepository(Context context, double minimumDistanceThreshold) {
-        this.minimumDistanceThreshold = minimumDistanceThreshold;
+    public StayPointRepository(Context context, double distanceRadio) {
+        this.distanceRadio = distanceRadio;
         stayPointsDal = new StayPointsDal(context);
     }
 
@@ -28,7 +28,7 @@ public class StayPointRepository {
         ArrayList<DbStayPoint> stayPoints = stayPointsDal.getAll();
         Location stayPointAsLocation = stayPoint.convertStayPointToLocation();
 
-        DbStayPoint closestStayPoint = LocationAnalyzer.findClosestStayPoint(stayPointAsLocation, stayPoints, minimumDistanceThreshold);
+        DbStayPoint closestStayPoint = LocationAnalyzer.findClosestStayPoint(stayPointAsLocation, stayPoints, distanceRadio);
         return closestStayPoint != null;
     }
 

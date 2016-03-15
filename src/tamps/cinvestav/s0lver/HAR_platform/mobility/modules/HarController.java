@@ -2,6 +2,7 @@ package tamps.cinvestav.s0lver.HAR_platform.mobility.modules;
 
 import android.content.Context;
 import android.util.Log;
+import tamps.cinvestav.s0lver.HAR_platform.har.activities.Activities;
 import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
 import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.classifiers.MobilityListener;
@@ -21,7 +22,7 @@ import java.util.TimerTask;
  * relaunching the classification according to the readingsPeriodRate
  */
 public class HarController implements MobilityListener, NaiveBayesListener{
-    private int runningCount = 0;
+    private int runningCount;
     private Timer harTimer;
     private TimerTask harTask;
     private NaiveBayesListener harClassificationListener;
@@ -31,6 +32,13 @@ public class HarController implements MobilityListener, NaiveBayesListener{
     private int harWindowsPerIntervention;
     private long readingsPeriodRate;
 
+    /***
+     * Constructor
+     * @param context The context for accessing to sensors system service
+     * @param geoFencing                   A reference to a GeoFencing object as for obtaining the current StayPoint in user mobility
+     * @param harWindowsPerIntervention    The amount of sampling windows (of five seconds) to be employed in each intervention for classifying accelerometer data.
+     * @param readingsPeriodRate           The sampling period of each intervention for classifying accelerometer data. Should be less than 5 secs * harWindowsPerIntervention
+     */
     public HarController(Context context, GeoFencing geoFencing, int harWindowsPerIntervention, long readingsPeriodRate) {
         this.accelerometerHub = new AccelerometerHub(context);
         this.geoFencing = geoFencing;
@@ -38,7 +46,7 @@ public class HarController implements MobilityListener, NaiveBayesListener{
         this.readingsPeriodRate = readingsPeriodRate;
         this.activitiesDal = new ActivitiesInStayPointDal(context);
         this.harClassificationListener = this;
-        this.harTask = buildHarTask();
+        Log.i(this.getClass().getSimpleName(), "Har windows per intervention is " + harWindowsPerIntervention);
     }
 
     /***
@@ -46,15 +54,17 @@ public class HarController implements MobilityListener, NaiveBayesListener{
      */
     private void launchHarSystem() {
         runningCount = 0;
+        Log.i(this.getClass().getSimpleName(), "HAR system started");
         // Next lines should be cancelled and changed by accelerometerHub.startClassification() if we want a permanent classification
+        this.harTask = buildHarTask();
         harTimer = new Timer();
         harTimer.scheduleAtFixedRate(harTask, 0, readingsPeriodRate);
     }
 
     /***
-     * Stops Timer and TimerTask machinery for stopping classification module
+     * Stops Timer and TimerTask machinery for stopping HAR classification module completely
      */
-    private void stopHarSystem() {
+    public void stopHarSystem() {
         runningCount = 0;
         Log.i(this.getClass().getSimpleName(), "HAR system stopped");
         accelerometerHub.stopClassification();
@@ -65,6 +75,15 @@ public class HarController implements MobilityListener, NaiveBayesListener{
     }
 
     /***
+     * Stops the current task but let the other future interventions to work
+     */
+    private void stopHarSystemIntervention() {
+        accelerometerHub.stopClassification();
+        runningCount = 0;
+        Log.i(this.getClass().getSimpleName(), "HAR system INTERVENTION is ending");
+    }
+
+    /***
      * Build the HAR TimerTask that is scheduled periodically by a Timer
      * @return The TimerTask to be scheduled for starting readings
      */
@@ -72,12 +91,18 @@ public class HarController implements MobilityListener, NaiveBayesListener{
         return new TimerTask() {
             @Override
             public void run() {
-                Log.i(GeoFencing.class.getSimpleName(), "HAR system started");
+                Log.i(this.getClass().getSimpleName(), "HAR system INTERVENTION is starting");
                 accelerometerHub.startClassification(harClassificationListener);
             }
         };
     }
 
+    /***
+     * Gets the notification of the user arriving at a StayPoint and instructs the launching of HAR system
+     * @param stayPoint The DbStayPoint to where the user has arrived
+     * @param timeOfArrival The time on which the arrival was detected (might not coincide with
+     *                              the stored information of the StayPoint)
+     */
     @Override
     public void onUserArrivingStayPoint(DbStayPoint stayPoint, Date timeOfArrival) {
         Log.i(this.getClass().getSimpleName(), "Got notification of user arriving at a StayPoint @ " + Constants.RECORDS_SIMPLE_DATE_FORMAT.format(timeOfArrival));
@@ -85,6 +110,11 @@ public class HarController implements MobilityListener, NaiveBayesListener{
         launchHarSystem();
     }
 
+    /***
+     * Gets the notification of user leaving a StayPoint and instructs the cancelling of the HAR system
+     * @param stayPoint The DbStayPoint that the user is leaving
+     * @param timeOfDeparture The time on which the departure was detected (might not coincide with
+     */
     @Override
     public void onUserLeavingStayPoint(DbStayPoint stayPoint, Date timeOfDeparture) {
         Log.i(this.getClass().getSimpleName(), "Got notification of user leaving a StayPoint @ " + Constants.RECORDS_SIMPLE_DATE_FORMAT.format(timeOfDeparture));
@@ -98,12 +128,12 @@ public class HarController implements MobilityListener, NaiveBayesListener{
      */
     @Override
     public void onClassifiedPattern(byte predictedActivityType) {
+        Log.i(this.getClass().getSimpleName(), "Detected activity " + Activities.getAsString(predictedActivityType));
         DbActivityInStayPoint activity = new DbActivityInStayPoint(0, geoFencing.getCurrentVisit().getId(), predictedActivityType, new Date(System.currentTimeMillis()));
         activity = activitiesDal.add(activity);
-
         runningCount++;
         if (runningCount == harWindowsPerIntervention) {
-            stopHarSystem();
+            stopHarSystemIntervention();
         }
     }
 }

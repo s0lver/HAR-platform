@@ -101,8 +101,7 @@ public class ZhenAlgorithm {
      */
     public StayPoint processLastPart() {
         if (amountFixes >= 1){
-            StayPoint sp = StayPoint.createStayPoint(sigmaLatitude, sigmaLongitude, arrivalTime, departureTime, amountFixes);
-            return sp;
+            return StayPoint.createStayPoint(sigmaLatitude, sigmaLongitude, arrivalTime, departureTime, amountFixes);
         }
         return null;
     }

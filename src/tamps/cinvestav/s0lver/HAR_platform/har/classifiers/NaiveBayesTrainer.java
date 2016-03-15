@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class NaiveBayesTrainer {
-    private final double laplaceCorrection = 0.01;
+    private final static double LAPLACE_CORRECTION = 0.01;
     private ArrayList<ActivityPattern> patterns;
 
     private byte uniqueClasses;
@@ -48,12 +48,12 @@ public class NaiveBayesTrainer {
             probabilityPerClass[i] = (double)patternsOfCurrentClass.size() / (double) patterns.size();
 
             double[] means = calculateMeans(patternsOfCurrentClass);
-            meanPerClass[stdDevDimension][i] = means[stdDevDimension] + laplaceCorrection;
-            meanPerClass[meanDimension][i] = means[meanDimension] + laplaceCorrection;
+            meanPerClass[stdDevDimension][i] = means[stdDevDimension] + LAPLACE_CORRECTION;
+            meanPerClass[meanDimension][i] = means[meanDimension] + LAPLACE_CORRECTION;
 
             double[] variances = calculateVariances(patternsOfCurrentClass, means);
-            variancePerClass[stdDevDimension][i] = variances[stdDevDimension] + laplaceCorrection;
-            variancePerClass[meanDimension][i] = variances[meanDimension] + laplaceCorrection;
+            variancePerClass[stdDevDimension][i] = variances[stdDevDimension] + LAPLACE_CORRECTION;
+            variancePerClass[meanDimension][i] = variances[meanDimension] + LAPLACE_CORRECTION;
         }
 
         return new NaiveBayesConfiguration(probabilityPerClass, meanPerClass, variancePerClass);

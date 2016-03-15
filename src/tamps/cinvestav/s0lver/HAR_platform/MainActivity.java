@@ -6,7 +6,6 @@ import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,7 +15,6 @@ import tamps.cinvestav.s0lver.HAR_platform.har.activities.Activities;
 import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
 import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
-import tamps.cinvestav.s0lver.HAR_platform.mobility.entities.StayPoint;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.hubs.MobilityHub;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.io.SmartphoneFixesFileReader;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.StayPointRepository;
@@ -25,7 +23,6 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbSta
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 
 /***
  * Testing activity
@@ -43,10 +40,11 @@ public class MainActivity extends Activity {
     private Spinner lstActivities;
 
     private MobilityHub mobilityHub;
-    private int harWindowsPerIntervention = 5;
-    private long readingsPeriodRate = tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.ONE_MINUTE;
+    private final int HAR_WINDOWS_PER_INTERVENTION = 5;
+    private final long readingsPeriodRate = tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.ONE_MINUTE;
 
     private final int[] STARTING_ROWS_OF_STAY_POINT = new int[]{1, 278, 351, 653, 801, 955, 1050, 1122, 1363, 1543, 1700, 1778, 1952, 2152, 2648, 2802, 2948};
+    private final int[] INDICES_OF_VISITS_TO_STAY_POINTS = new int[]{630, 652, 932, 956, 1051, 1122, 1541, 1701, 1952, 2018, 2022, 2152, 2555, 2944, 2948};
     private final int LAST_LEARNING_FIX = 614;
     private final int LAST_FIX = 3254;
     private SmartphoneFixesFileReader reader;
@@ -59,7 +57,7 @@ public class MainActivity extends Activity {
         prepareSoundPlayers();
         prepareSpinners();
         accelerometerHub = new AccelerometerHub(this);
-        mobilityHub = new MobilityHub(this, Constants.ONE_MINUTE * 45, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER, harWindowsPerIntervention, readingsPeriodRate);
+        mobilityHub = new MobilityHub(this, Constants.ONE_MINUTE * 45, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER, HAR_WINDOWS_PER_INTERVENTION, readingsPeriodRate);
 
         String path = Environment.getExternalStorageDirectory() + File.separator + "har-system" + File.separator+ "input-records.csv";
         Log.i(this.getClass().getSimpleName(), "Trying to open path " + path);
@@ -173,6 +171,8 @@ public class MainActivity extends Activity {
         mediaPlayerOff.reset();
         mediaPlayerOff.release();
         mediaPlayerOff = null;
+
+        mobilityHub.stopMobilityTracking();
     }
 
     private void prepareSpinners() {
@@ -219,33 +219,21 @@ public class MainActivity extends Activity {
     }
 
     private void recreateDatabase() {
-        StayPointRepository repository = new StayPointRepository(this, 500);
+        StayPointRepository repository = new StayPointRepository(this, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER / 2);
         SQLiteHelper dbHelper = new SQLiteHelper(this);
         dbHelper.recreateDatabase();
     }
 
     private void showAllStayPoints() {
-        StayPointRepository repository = new StayPointRepository(this, 500);
+        StayPointRepository repository = new StayPointRepository(this, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER / 2);
         ArrayList<DbStayPoint> stayPoints = repository.getStayPointsDal().getAll();
         for (DbStayPoint stayPoint : stayPoints) {
             Log.i(this.getClass().getSimpleName(), stayPoint.toString());
         }
     }
 
-    private void simulateAdd() {
-        StayPointRepository repository = new StayPointRepository(this, 500);
-        StayPoint stayPoint = new StayPoint(23.7205693, -99.0777659, new Date(System.currentTimeMillis() - (3600 * 1000)), new Date(SystemClock.currentThreadTimeMillis()), 0);
-//        boolean added = repository.add(stayPoint);
-        DbStayPoint addedStayPoint = repository.getStayPointsDal().add(stayPoint);
-        Log.i(this.getClass().getSimpleName(), "Added: " + addedStayPoint);
-        addedStayPoint.setVisitCount(addedStayPoint.getVisitCount() + 1);
-        DbStayPoint updatedStayPoint = repository.getStayPointsDal().update(addedStayPoint);
-        Log.i(this.getClass().getSimpleName(), "Modified: " + addedStayPoint);
-
-    }
-
     private void clearStayPointsTable() {
-        StayPointRepository repository = new StayPointRepository(this, 500);
+        StayPointRepository repository = new StayPointRepository(this, tamps.cinvestav.s0lver.HAR_platform.mobility.utils.Constants.MIN_DISTANCE_PARAMETER / 2);
         SQLiteHelper helper = new SQLiteHelper(this);
         helper.clearDatabase();
         helper.recreateDatabase();
@@ -261,7 +249,8 @@ public class MainActivity extends Activity {
 
 
     private int currentRow = 0;
-    private int currentStartingRowIndex = 0;
+    private int currentIndexOfVisits = 0;
+    
     public void clickBtnLearnStayPoints(View view) {
         // First, restart database
         clickDoStuffWithDb(view);
@@ -284,27 +273,30 @@ public class MainActivity extends Activity {
         }
 
         currentRow = LAST_LEARNING_FIX;
-        currentStartingRowIndex = 3;
+        currentIndexOfVisits = 0;
         Log.i(this.getClass().getSimpleName(), "I just learned the first StayPoints");
     }
 
     public void clikBtnGoToNextStayPoint(View view) {
-        if (currentStartingRowIndex == STARTING_ROWS_OF_STAY_POINT.length) {
+        if (currentIndexOfVisits == INDICES_OF_VISITS_TO_STAY_POINTS.length) {
             Toast.makeText(MainActivity.this, "You just passed the last StayPoint", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Should be less than STARTING... + 2, 1 bc 0 based and 1 bc is INSIDE the SP
-        int stopCriteria = STARTING_ROWS_OF_STAY_POINT[currentStartingRowIndex] + 2;
-        for (int i = currentRow; i < stopCriteria; i++) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            Log.i(this.getClass().getSimpleName(), "Passing row " + i);
+        int index = INDICES_OF_VISITS_TO_STAY_POINTS[currentIndexOfVisits];
+        for (int i = currentRow; i < index; i++) {
             Location location = reader.readLine();
+//            Log.i(this.getClass().getSimpleName(), "Passing row " + i);
             mobilityHub.onLocationChanged(location);
         }
-        currentRow = stopCriteria;
-        Log.i(this.getClass().getSimpleName(), "The user is at the entrance of StayPoint " + currentStartingRowIndex + " (0 based)");
-//        currentRow = STARTING_ROWS_OF_STAY_POINT[currentStartingRowIndex];
-        currentStartingRowIndex++;
+        Log.i(this.getClass().getSimpleName(), "The user is at the entrance of StayPoint " + currentIndexOfVisits + " (0 based)");
+        currentRow = index;
+        currentIndexOfVisits++;
     }
 }

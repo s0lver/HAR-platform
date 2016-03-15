@@ -11,17 +11,37 @@ public class Activities {
 
     /***
      * Indicates whether the specified activity type is recognized by the platform
-     * @param type The activity type to validate
+     * @param activityType The activity type to validate
      * @return true if the activity is recognized, false otherwise
      */
-    public static boolean isRecognized(byte type){
-        switch (type) {
+    public static boolean isRecognized(byte activityType){
+        switch (activityType) {
             case STATIC:
             case WALKING:
             case RUNNING:
                 return true;
             default:
                 return false;
+        }
+    }
+
+
+    /***
+     * Obtains a String representation of the given activity type
+     * @param activityType The activityType recognized by the classifier
+     * @return A String representation of the activity type
+     */
+    public static String getAsString(byte activityType) {
+        if (!isRecognized(activityType)) return "Unknown";
+        switch (activityType) {
+            case STATIC:
+                return "Static";
+            case WALKING:
+                return "Walking";
+            case RUNNING:
+                return "Running";
+            default:
+                return "Unknown";
         }
     }
 }

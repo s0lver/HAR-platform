@@ -141,4 +141,18 @@ public class StayPoint{
 
         return location;
     }
+
+    @Override
+    public boolean equals(Object stayPoint) {
+        if (!(stayPoint instanceof StayPoint)) {
+            throw new RuntimeException("I can compare only against other StayPoint dude");
+        }else{
+            StayPoint theStayPoint = (StayPoint) stayPoint;
+            if (this.getLatitude() != theStayPoint.getLatitude()) return false;
+            if (this.getLongitude() != theStayPoint.getLongitude()) return false;
+            if (this.getArrivalTime().getTime() != theStayPoint.getArrivalTime().getTime()) return false;
+            if (this.getDepartureTime().getTime() != theStayPoint.getDepartureTime().getTime()) return false;
+        }
+        return true;
+    }
 }

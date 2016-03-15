@@ -14,6 +14,13 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbSta
 import java.util.ArrayList;
 import java.util.Date;
 
+/***
+ * Reacts to each location update, detecting when the user is arriving or leaving a previously learned StayPoint and
+ * controlling the HAR module accordingly.
+ * @see HarController
+ * @see StayPointRepository
+ * @see StayPointVisitsRepository
+ */
 public class GeoFencing {
     private final StayPointRepository stayPointRepository;
     private final StayPointVisitsRepository visitRepository;
@@ -21,23 +28,23 @@ public class GeoFencing {
     private DbStayPoint previousStayPoint;
     private DbStayPointVisit currentVisit;
     private HarController harController;
-    private final double minDistanceParameter;
+    private final double radioDistance;
     private boolean isUserAtStayPoint, wasUserAtStayPoint;
 
     /***
      * Constructor
      *
      * @param context                     The context for creating and accessing to the StayPoint repository
-     * @param minimumDistanceParameter    The minimum distance parameter for geo-fencing analysis
+     * @param radioDistance    The minimum distance parameter for geo-fencing analysis
      * @param harWindowsPerIntervention   The amount of accelerometer data windows to classify in each intervention. (HAR system is triggered when user enters into a StayPoint)
      * @param readingsPeriodRate          The period or interval between each intervention for reading and classifying accelerometer data.
      * @see MobilityListener
      */
-    public GeoFencing(Context context, double minimumDistanceParameter, int harWindowsPerIntervention, long readingsPeriodRate) {
-        this.stayPointRepository = new StayPointRepository(context, minimumDistanceParameter);
+    public GeoFencing(Context context, double radioDistance, int harWindowsPerIntervention, long readingsPeriodRate) {
+        this.stayPointRepository = new StayPointRepository(context, radioDistance);
         this.visitRepository = new StayPointVisitsRepository(context);
         this.harController = new HarController(context, this, harWindowsPerIntervention, readingsPeriodRate);
-        this.minDistanceParameter = minimumDistanceParameter;
+        this.radioDistance = radioDistance;
         this.isUserAtStayPoint = false;
         this.wasUserAtStayPoint = false;
     }
@@ -50,7 +57,7 @@ public class GeoFencing {
      */
     public void evaluateMobility(Location location) {
         ArrayList<DbStayPoint> stayPoints = stayPointRepository.getAllStayPoints();
-        DbStayPoint closestStayPoint = LocationAnalyzer.findClosestStayPoint(location, stayPoints, minDistanceParameter);
+        DbStayPoint closestStayPoint = LocationAnalyzer.findClosestStayPoint(location, stayPoints, radioDistance);
 
         wasUserAtStayPoint = isUserAtStayPoint;
         previousStayPoint = currentStayPoint;
@@ -66,7 +73,7 @@ public class GeoFencing {
                 // 2. Update the visit information of this StayPoint
                 stayPointRepository.update(currentStayPoint);
                 // 3. Notify that the user is arriving, so that HAR can be triggered...
-//                harController.onUserArrivingStayPoint(currentStayPoint, new Date(location.getTime()));
+                harController.onUserArrivingStayPoint(currentStayPoint, new Date(location.getTime()));
             }
         } else {
             isUserAtStayPoint = false;
@@ -76,7 +83,7 @@ public class GeoFencing {
                 currentVisit.setDepartureTime(new Date(location.getTime()));
                 visitRepository.updateVisitInformation(currentVisit);
                 // 2. Notifies that the user is leaving, so that HAR can be stopped...
-//                harController.onUserLeavingStayPoint(previousStayPoint, currentVisit.getDepartureTime());
+                harController.onUserLeavingStayPoint(previousStayPoint, currentVisit.getDepartureTime());
             }
         }
     }
@@ -110,7 +117,7 @@ public class GeoFencing {
      * @return true if the user is <italic>suddenly</italic> showing up in a new StayPoint
      */
     private boolean isUserAppearingInANewStayPoint() {
-        return wasUserAtStayPoint && isUserAtStayPoint && currentStayPoint != previousStayPoint;
+        return wasUserAtStayPoint && isUserAtStayPoint && !currentStayPoint.getStayPoint().equals(previousStayPoint.getStayPoint());
     }
 
     /***
@@ -122,7 +129,20 @@ public class GeoFencing {
         return wasUserAtStayPoint && !isUserAtStayPoint;
     }
 
+    /***
+     * Obtains the current StayPoint that user is visiting
+     * @return The StayPoint where the user currently is.
+     */
     public DbStayPointVisit getCurrentVisit() {
         return currentVisit;
+    }
+
+    /***
+     * Stops the collection + analysis of accelerometer data
+     * @see HarController
+     */
+    public void stopGeoFencing() {
+        harController.stopHarSystem();
+        harController = null;
     }
 }
