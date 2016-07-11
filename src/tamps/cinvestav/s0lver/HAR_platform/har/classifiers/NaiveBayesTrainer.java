@@ -34,7 +34,7 @@ public class NaiveBayesTrainer {
      * Trains the Naive Bayes classifier using the ActivityPattern field
      */
     public NaiveBayesConfiguration train() {
-        countUniqueClasses();
+        uniqueClasses = Constants.UNIQUE_CLASSES;
         probabilityPerClass = new double[uniqueClasses];
         meanPerClass = new double[Constants.TOTAL_DIMENSIONS][uniqueClasses];
         variancePerClass = new double[Constants.TOTAL_DIMENSIONS][uniqueClasses];
@@ -53,25 +53,8 @@ public class NaiveBayesTrainer {
             variancePerClass[Constants.MEAN_DIMENSION][i] = variances[Constants.MEAN_DIMENSION] + LAPLACE_CORRECTION;
         }
 
+        printValues();
         return new NaiveBayesConfiguration(probabilityPerClass, meanPerClass, variancePerClass);
-    }
-
-    /***
-     * Writes the training result into a csv file
-     */
-    public void writeData() {
-        try {
-            PrintWriter pw = new PrintWriter(new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator
-                    + "har-system" + File.separator + "training-configuration.csv"));
-            for (int i = 0; i < uniqueClasses; i++) {
-                pw.println(probabilityPerClass[i]);
-                pw.println(meanPerClass[Constants.STD_DEV_DIMENSION][i] + "," + meanPerClass[Constants.MEAN_DIMENSION][i]);
-                pw.println(variancePerClass[Constants.STD_DEV_DIMENSION][i] + "," + variancePerClass[Constants.MEAN_DIMENSION][i]);
-            }
-            pw.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     /***
@@ -124,13 +107,6 @@ public class NaiveBayesTrainer {
                 sumStdDeviation / patternsOfCurrentClass.size(),
                 sumMean / patternsOfCurrentClass.size()
         };
-    }
-
-    /***
-     * Counts the unique classes [we could simply put return 3 xD]
-     */
-    private void countUniqueClasses() {
-        this.uniqueClasses = patterns.get(patterns.size() - 1).getType();
     }
 
     private ArrayList<ActivityPattern> getPatternsOfClass(int i) {
