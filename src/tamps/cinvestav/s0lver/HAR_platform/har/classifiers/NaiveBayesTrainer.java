@@ -1,14 +1,9 @@
 package tamps.cinvestav.s0lver.HAR_platform.har.classifiers;
 
-import android.os.Environment;
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.har.activities.ActivityPattern;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class NaiveBayesTrainer {
