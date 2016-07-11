@@ -28,9 +28,9 @@ public class Constants {
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 
     /***
-     * Unique classes recognized by the platform (currently 3)
+     * Unique classes recognized by the platform (currently 4)
      */
-    public final static int UNIQUE_CLASSES = 3;
+    public final static int UNIQUE_CLASSES = 4;
 
     /***
      * Total dimensions employed by the trainer - classifier

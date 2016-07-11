@@ -51,10 +51,12 @@ public class ModuleAccelerometerTrainer {
         ArrayList<ActivityPattern> patternsStatic = TrainingFilesReader.readStaticFile();
         ArrayList<ActivityPattern> patternsWalking = TrainingFilesReader.readWalkingFile();
         ArrayList<ActivityPattern> patternsRunning = TrainingFilesReader.readRunningFile();
+        ArrayList<ActivityPattern> patternsVehicle = TrainingFilesReader.readVehicleFile();
 
         patterns.addAll(patternsStatic);
         patterns.addAll(patternsWalking);
         patterns.addAll(patternsRunning);
+        patterns.addAll(patternsVehicle);
         return patterns;
     }
 }

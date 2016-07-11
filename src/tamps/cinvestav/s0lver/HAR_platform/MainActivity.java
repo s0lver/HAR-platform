@@ -88,8 +88,7 @@ public class MainActivity extends Activity {
      * @param view The origin of the event
      */
     public void clickTrainNaiveBayes(View view) {
-        ModuleAccelerometerFilePreprocessor fp = new ModuleAccelerometerFilePreprocessor("vehicle.csv", "patterns-vehicle");
-        fp.preProcessFile();
+        accelerometerHub.trainClassifier();
     }
 
     /***

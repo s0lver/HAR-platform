@@ -15,7 +15,6 @@ public class NaiveBayesTrainer {
     private final static double LAPLACE_CORRECTION = 0.01;
     private final ArrayList<ActivityPattern> patterns;
 
-    private byte uniqueClasses;
     private double[] probabilityPerClass;
     private double[][] meanPerClass;
     private double[][] variancePerClass;
@@ -34,16 +33,16 @@ public class NaiveBayesTrainer {
      * Trains the Naive Bayes classifier using the ActivityPattern field
      */
     public NaiveBayesConfiguration train() {
-        countUniqueClasses();
-        probabilityPerClass = new double[uniqueClasses];
-        meanPerClass = new double[Constants.TOTAL_DIMENSIONS][uniqueClasses];
-        variancePerClass = new double[Constants.TOTAL_DIMENSIONS][uniqueClasses];
 
-        for (int i = 0; i < uniqueClasses; i++) {
+        probabilityPerClass = new double[Constants.UNIQUE_CLASSES];
+        meanPerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASSES];
+        variancePerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASSES];
+
+        for (int i = 0; i < Constants.UNIQUE_CLASSES; i++) {
             ArrayList<ActivityPattern> patternsOfCurrentClass = getPatternsOfClass(i + 1);
 
-            probabilityPerClass[i] = (double)patternsOfCurrentClass.size() / (double) patterns.size();
-
+//            probabilityPerClass[i] = (double)patternsOfCurrentClass.size() / (double) patterns.size();
+            probabilityPerClass[i] = 1 / Constants.UNIQUE_CLASSES;
             double[] means = calculateMeans(patternsOfCurrentClass);
             meanPerClass[Constants.STD_DEV_DIMENSION][i] = means[Constants.STD_DEV_DIMENSION] + LAPLACE_CORRECTION;
             meanPerClass[Constants.MEAN_DIMENSION][i] = means[Constants.MEAN_DIMENSION] + LAPLACE_CORRECTION;
@@ -53,32 +52,15 @@ public class NaiveBayesTrainer {
             variancePerClass[Constants.MEAN_DIMENSION][i] = variances[Constants.MEAN_DIMENSION] + LAPLACE_CORRECTION;
         }
 
+        printValues();
         return new NaiveBayesConfiguration(probabilityPerClass, meanPerClass, variancePerClass);
-    }
-
-    /***
-     * Writes the training result into a csv file
-     */
-    public void writeData() {
-        try {
-            PrintWriter pw = new PrintWriter(new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator
-                    + "har-system" + File.separator + "training-configuration.csv"));
-            for (int i = 0; i < uniqueClasses; i++) {
-                pw.println(probabilityPerClass[i]);
-                pw.println(meanPerClass[Constants.STD_DEV_DIMENSION][i] + "," + meanPerClass[Constants.MEAN_DIMENSION][i]);
-                pw.println(variancePerClass[Constants.STD_DEV_DIMENSION][i] + "," + variancePerClass[Constants.MEAN_DIMENSION][i]);
-            }
-            pw.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     /***
      * Outputs the training configuration to the Android Log
      */
     private void printValues() {
-        for (int i=0; i<uniqueClasses; i++) {
+        for (int i = 0; i < Constants.UNIQUE_CLASSES; i++) {
             Log.i(this.getClass().getSimpleName(), "Class: " + i);
             Log.i(this.getClass().getSimpleName(), "Probability=" + probabilityPerClass[i]);
             Log.i(this.getClass().getSimpleName(), "Means: StdDevDimension=" + meanPerClass[Constants.STD_DEV_DIMENSION][i]
@@ -124,13 +106,6 @@ public class NaiveBayesTrainer {
                 sumStdDeviation / patternsOfCurrentClass.size(),
                 sumMean / patternsOfCurrentClass.size()
         };
-    }
-
-    /***
-     * Counts the unique classes [we could simply put return 3 xD]
-     */
-    private void countUniqueClasses() {
-        this.uniqueClasses = patterns.get(patterns.size() - 1).getType();
     }
 
     private ArrayList<ActivityPattern> getPatternsOfClass(int i) {

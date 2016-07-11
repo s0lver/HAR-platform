@@ -27,7 +27,7 @@ public class NaiveBayesConfigurationFileWriter {
         double[][] meanPerClass = naiveBayesConfiguration.getMeanPerClass();
         try {
             String filePath = Environment.getExternalStorageDirectory() + File.separator
-                    + "har-system" + File.separator + "training-configuration.csv";
+                    + "har-system-training-files" + File.separator + "training-configuration.csv";
             PrintWriter pw = new PrintWriter(new FileWriter(filePath));
             for (int i = 0; i < Constants.UNIQUE_CLASSES; i++) {
                 // 1. Probability of this class
