@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:text="Train Naive Bayes"
             android:id="@+id/btnTrainNaiveBayes" android:layout_gravity="center_horizontal"
-            android:enabled="false"
+            android:enabled="true"
             android:onClick="clickTrainNaiveBayes"/>
     <LinearLayout
             android:orientation="horizontal"

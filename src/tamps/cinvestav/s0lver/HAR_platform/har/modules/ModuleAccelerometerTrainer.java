@@ -15,16 +15,7 @@ import java.util.ArrayList;
  * Module for training a Naive Bayes classifier.
  */
 public class ModuleAccelerometerTrainer {
-    private final Context context;
     private NaiveBayesConfiguration naiveBayesConfiguration;
-
-    /***
-     * Constructor
-     * @param context Context for accessing the assets folder
-     */
-    public ModuleAccelerometerTrainer(Context context) {
-        this.context = context;
-    }
 
     /***
      * Calls the training of a naive bayes instance using a list of patterns read from file
@@ -57,9 +48,9 @@ public class ModuleAccelerometerTrainer {
      */
     private ArrayList<ActivityPattern> loadPatternsFromFile() throws IOException {
         ArrayList<ActivityPattern> patterns = new ArrayList<>();
-        ArrayList<ActivityPattern> patternsStatic = TrainingFilesReader.readStaticFile(context);
-        ArrayList<ActivityPattern> patternsWalking = TrainingFilesReader.readWalkingFile(context);
-        ArrayList<ActivityPattern> patternsRunning = TrainingFilesReader.readRunningFile(context);
+        ArrayList<ActivityPattern> patternsStatic = TrainingFilesReader.readStaticFile();
+        ArrayList<ActivityPattern> patternsWalking = TrainingFilesReader.readWalkingFile();
+        ArrayList<ActivityPattern> patternsRunning = TrainingFilesReader.readRunningFile();
 
         patterns.addAll(patternsStatic);
         patterns.addAll(patternsWalking);

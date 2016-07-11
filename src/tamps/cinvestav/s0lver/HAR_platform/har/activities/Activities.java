@@ -8,6 +8,7 @@ public class Activities {
     public static final byte STATIC = 0x1;
     public static final byte WALKING = 0x2;
     public static final byte RUNNING = 0x3;
+    public static final byte VEHICLE = 0x4;
 
     /***
      * Indicates whether the specified activity type is recognized by the platform
@@ -19,6 +20,7 @@ public class Activities {
             case STATIC:
             case WALKING:
             case RUNNING:
+            case VEHICLE:
                 return true;
             default:
                 return false;
@@ -40,6 +42,8 @@ public class Activities {
                 return "Walking";
             case RUNNING:
                 return "Running";
+            case VEHICLE:
+                return "Vehicle";
             default:
                 return "Unknown";
         }

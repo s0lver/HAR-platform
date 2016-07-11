@@ -14,22 +14,26 @@ import java.util.ArrayList;
  * @see Activities
  */
 public class TrainingFilesReader {
-    public static ArrayList<ActivityPattern> readStaticFile(Context context) throws IOException {
+    public static ArrayList<ActivityPattern> readStaticFile() throws IOException {
         return readFile("training-static.csv", Activities.STATIC);
     }
 
-    public static ArrayList<ActivityPattern> readWalkingFile(Context context) throws IOException {
+    public static ArrayList<ActivityPattern> readWalkingFile() throws IOException {
         return readFile("training-walking.csv", Activities.WALKING);
     }
 
-    public static ArrayList<ActivityPattern> readRunningFile(Context context) throws IOException {
+    public static ArrayList<ActivityPattern> readRunningFile() throws IOException {
         return readFile("training-running.csv", Activities.RUNNING);
+    }
+
+    public static ArrayList<ActivityPattern> readVehicleFile() throws IOException {
+        return readFile("training-vehicle.csv", Activities.VEHICLE);
     }
 
     private static ArrayList<ActivityPattern> readFile(String filename, byte type) throws IOException {
         ArrayList<ActivityPattern> trainingPatterns = new ArrayList<>();
         String filePath = Environment.getExternalStorageDirectory() + File.separator
-                + "har-system" + File.separator + filename;
+                + "har-system-training-files" + File.separator + filename;
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
         String line = reader.readLine();
         while (line != null) {

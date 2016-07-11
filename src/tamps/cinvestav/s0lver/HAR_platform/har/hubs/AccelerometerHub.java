@@ -48,7 +48,7 @@ public class AccelerometerHub {
      * @return A NaiveBayesConfiguration with the result of the training
      */
     public NaiveBayesConfiguration trainClassifier() {
-        ModuleAccelerometerTrainer trainer = new ModuleAccelerometerTrainer(context);
+        ModuleAccelerometerTrainer trainer = new ModuleAccelerometerTrainer();
         return trainer.train();
     }
 

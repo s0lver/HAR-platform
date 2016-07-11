@@ -13,7 +13,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import tamps.cinvestav.s0lver.HAR_platform.har.activities.Activities;
 import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
+import tamps.cinvestav.s0lver.HAR_platform.har.entities.AccelerometerReadingWithRunId;
 import tamps.cinvestav.s0lver.HAR_platform.har.hubs.AccelerometerHub;
+import tamps.cinvestav.s0lver.HAR_platform.har.io.AccelerationsFileReader;
+import tamps.cinvestav.s0lver.HAR_platform.har.modules.ModuleAccelerometerFilePreprocessor;
+import tamps.cinvestav.s0lver.HAR_platform.har.modules.ModuleAccelerometerPreprocessor;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.hubs.MobilityHub;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.io.SmartphoneFixesFileReader;
@@ -22,6 +26,7 @@ import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.SQLiteHelper;
 import tamps.cinvestav.s0lver.HAR_platform.mobility.repository.db.entities.DbStayPoint;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /***
@@ -83,7 +88,8 @@ public class MainActivity extends Activity {
      * @param view The origin of the event
      */
     public void clickTrainNaiveBayes(View view) {
-        accelerometerHub.trainClassifier();
+        ModuleAccelerometerFilePreprocessor fp = new ModuleAccelerometerFilePreprocessor("vehicle.csv", "patterns-vehicle");
+        fp.preProcessFile();
     }
 
     /***
@@ -173,7 +179,7 @@ public class MainActivity extends Activity {
         mediaPlayerOff.release();
         mediaPlayerOff = null;
 
-        mobilityHub.stopMobilityTracking();
+//        mobilityHub.stopMobilityTracking();
     }
 
     private void prepareSpinners() {
@@ -297,5 +303,14 @@ public class MainActivity extends Activity {
         Log.i(this.getClass().getSimpleName(), "The user is at the entrance of StayPoint " + currentIndexOfVisits + " (0 based)");
         currentRow = index;
         currentIndexOfVisits++;
+    }
+
+    /***
+     * Call it when you have a raw file of accelerometer readings
+     * @param view The origin of the event
+     */
+    public void clickProcessTrainingFile(View view) {
+        ModuleAccelerometerFilePreprocessor fp = new ModuleAccelerometerFilePreprocessor("vehicle.csv", "patterns-vehicle");
+        fp.preProcessFile();
     }
 }

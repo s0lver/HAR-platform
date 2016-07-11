@@ -16,7 +16,7 @@ import java.util.Date;
  * Internally builds a magnitude vector, at the end the produced output is
  * the mean and stdDev attributes of such magnitude vector.
  */
-class ModuleAccelerometerPreprocessor {
+public class ModuleAccelerometerPreprocessor {
     private ArrayList<AccelerometerReading> samplingWindow;
     private double[] magnitudeVector;
     private double mean;
