@@ -28,7 +28,6 @@ public class NaiveBayesTrainer {
      * Trains the Naive Bayes classifier using the ActivityPattern field
      */
     public NaiveBayesConfiguration train() {
-
         probabilityPerClass = new double[Constants.UNIQUE_CLASSES];
         meanPerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASSES];
         variancePerClass = new double[Constants.TOTAL_DIMENSIONS][Constants.UNIQUE_CLASSES];
