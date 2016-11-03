@@ -15,19 +15,19 @@ import java.util.ArrayList;
  */
 public class TrainingFilesReader {
     public static ArrayList<ActivityPattern> readStaticFile() throws IOException {
-        return readFile("training-static.csv", Activities.STATIC);
+        return readFile("patterns-static.csv", Activities.STATIC);
     }
 
     public static ArrayList<ActivityPattern> readWalkingFile() throws IOException {
-        return readFile("training-walking.csv", Activities.WALKING);
+        return readFile("patterns-walking.csv", Activities.WALKING);
     }
 
     public static ArrayList<ActivityPattern> readRunningFile() throws IOException {
-        return readFile("training-running.csv", Activities.RUNNING);
+        return readFile("patterns-running.csv", Activities.RUNNING);
     }
 
     public static ArrayList<ActivityPattern> readVehicleFile() throws IOException {
-        return readFile("training-vehicle.csv", Activities.VEHICLE);
+        return readFile("patterns-vehicle.csv", Activities.VEHICLE);
     }
 
     private static ArrayList<ActivityPattern> readFile(String filename, byte type) throws IOException {

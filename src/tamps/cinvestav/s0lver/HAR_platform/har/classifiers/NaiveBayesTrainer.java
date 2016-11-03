@@ -36,7 +36,7 @@ public class NaiveBayesTrainer {
             ArrayList<ActivityPattern> patternsOfCurrentClass = getPatternsOfClass(i + 1);
 
 //            probabilityPerClass[i] = (double)patternsOfCurrentClass.size() / (double) patterns.size();
-            probabilityPerClass[i] = 1 / Constants.UNIQUE_CLASSES;
+            probabilityPerClass[i] = 1.0 / Constants.UNIQUE_CLASSES;
             double[] means = calculateMeans(patternsOfCurrentClass);
             meanPerClass[Constants.STD_DEV_DIMENSION][i] = means[Constants.STD_DEV_DIMENSION] + LAPLACE_CORRECTION;
             meanPerClass[Constants.MEAN_DIMENSION][i] = means[Constants.MEAN_DIMENSION] + LAPLACE_CORRECTION;

@@ -91,6 +91,7 @@ public class MainActivity extends Activity {
         accelerometerHub.trainClassifier();
     }
 
+
     /***
      * Called when the start classification button is pressed
      * @param view The origin of the event
@@ -140,7 +141,7 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(Constants.ONE_SECOND);
+                    Thread.sleep(Constants.ONE_SECOND * 6);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(MainActivity.this, "Something wrong happened, I have to go", Toast.LENGTH_SHORT).show();
@@ -183,7 +184,7 @@ public class MainActivity extends Activity {
 
     private void prepareSpinners() {
         this.lstActivities = (Spinner) findViewById(R.id.lstActivities);
-        final String[] availableActivities = new String[]{"Static", "Walking", "Running"};
+        final String[] availableActivities = new String[]{"Static", "Walking", "Running", "Vehicle"};
 
         ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, availableActivities);
 
@@ -209,6 +210,9 @@ public class MainActivity extends Activity {
                         break;
                     case Activities.RUNNING:
                         mediaPlayerRunning.start();
+                        break;
+                    case Activities.VEHICLE:
+                        Log.i(MainActivity.this.getClass().getSimpleName(), "Vehicle activity, I have no sound by the moment");
                         break;
                     default:
                         Log.i(MainActivity.this.getClass().getSimpleName(), "Unknown activity type");
@@ -308,8 +312,7 @@ public class MainActivity extends Activity {
      * Call it when you have a raw file of accelerometer readings
      * @param view The origin of the event
      */
-    public void clickProcessTrainingFile(View view) {
-        ModuleAccelerometerFilePreprocessor fp = new ModuleAccelerometerFilePreprocessor("vehicle.csv", "patterns-vehicle");
-        fp.preProcessFile();
+    public void clickGeneratePatterns(View view) {
+        accelerometerHub.buildPatternFiles();
     }
 }

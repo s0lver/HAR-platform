@@ -1,7 +1,6 @@
 package tamps.cinvestav.s0lver.HAR_platform.har.modules;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.har.activities.Activities;
 import tamps.cinvestav.s0lver.HAR_platform.har.activities.ActivityPattern;
@@ -14,7 +13,6 @@ import tamps.cinvestav.s0lver.HAR_platform.har.hal.AccelerometerReadingListener;
 import tamps.cinvestav.s0lver.HAR_platform.har.io.NaiveBayesConfigurationFileReader;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,7 +86,7 @@ public class ModuleAccelerometerClassifier implements AccelerometerReadingListen
             public void run() {
                 ModuleAccelerometerPreprocessor preprocessor =
                         new ModuleAccelerometerPreprocessor(readings, "classifying", sizeOfWindow, 1, startTime);
-                double[] preprocessedReadings = preprocessor.preprocessSamplingWindow();
+                double[] preprocessedReadings = preprocessor.preProcessSamplingWindow();
 
                 ActivityPattern pattern =
                         new ActivityPattern(Activities.UNKNOWN, preprocessedReadings[0], preprocessedReadings[1]);

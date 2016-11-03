@@ -41,8 +41,12 @@ public class ModuleAccelerometerPreprocessor {
         this.startTime = startTime;
     }
 
-    public double[] preprocessSamplingWindow() {
-        // filterGravity();
+    /***
+     * Preprocesses the sampling window in memory, and also writes corresponding files to "disk".
+     * @return The pattern corresponding to the sampling window (std dev and mean)
+     */
+    public double[] preProcessSamplingWindow() {
+        filterGravity();
         calculateMagnitudeVector();
         calculateMean();
         calculateStandardDeviation();

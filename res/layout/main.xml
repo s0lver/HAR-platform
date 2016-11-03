@@ -44,6 +44,14 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Generate pattern files"
+            android:id="@+id/btnGeneratePatterns" android:layout_gravity="center_horizontal"
+            android:enabled="true"
+            android:onClick="clickGeneratePatterns"/>
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Train Naive Bayes"
             android:id="@+id/btnTrainNaiveBayes" android:layout_gravity="center_horizontal"
             android:enabled="true"

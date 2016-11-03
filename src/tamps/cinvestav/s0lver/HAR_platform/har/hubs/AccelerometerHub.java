@@ -1,11 +1,10 @@
 package tamps.cinvestav.s0lver.HAR_platform.har.hubs;
 
 import android.content.Context;
+import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesConfiguration;
 import tamps.cinvestav.s0lver.HAR_platform.har.classifiers.NaiveBayesListener;
-import tamps.cinvestav.s0lver.HAR_platform.har.modules.ModuleAccelerometerClassifier;
-import tamps.cinvestav.s0lver.HAR_platform.har.modules.ModuleAccelerometerLogger;
-import tamps.cinvestav.s0lver.HAR_platform.har.modules.ModuleAccelerometerTrainer;
+import tamps.cinvestav.s0lver.HAR_platform.har.modules.*;
 import tamps.cinvestav.s0lver.HAR_platform.har.utils.Constants;
 
 /***
@@ -67,5 +66,23 @@ public class AccelerometerHub {
      */
     public void stopClassification() {
         classifier.stopClassification();
+    }
+
+    public void buildPatternFiles() {
+        ModuleAccelerometerFilePreprocessor fp = new ModuleAccelerometerFilePreprocessor("raw-static.csv", "patterns-static.csv");
+        fp.preProcessFile();
+        Log.i("hub", "pattern file generated for static");
+
+        fp = new ModuleAccelerometerFilePreprocessor("raw-walking.csv", "patterns-walking.csv");
+        fp.preProcessFile();
+        Log.i("hub", "pattern file generated for walking");
+
+        fp = new ModuleAccelerometerFilePreprocessor("raw-running.csv", "patterns-running.csv");
+        fp.preProcessFile();
+        Log.i("hub", "pattern file generated for running");
+
+        fp = new ModuleAccelerometerFilePreprocessor("raw-vehicle.csv", "patterns-vehicle.csv");
+        fp.preProcessFile();
+        Log.i("hub", "pattern file generated for vehicle");
     }
 }

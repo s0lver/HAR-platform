@@ -1,6 +1,7 @@
 package tamps.cinvestav.s0lver.HAR_platform.har.io;
 
 import android.os.Environment;
+import android.util.Log;
 import tamps.cinvestav.s0lver.HAR_platform.har.entities.AccelerometerReading;
 import tamps.cinvestav.s0lver.HAR_platform.har.entities.AccelerometerReadingWithRunId;
 

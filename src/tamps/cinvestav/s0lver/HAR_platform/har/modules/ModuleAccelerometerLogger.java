@@ -20,7 +20,7 @@ import java.util.Date;
  * @see AccelerometerReadingListener
  */
 public class ModuleAccelerometerLogger implements AccelerometerReadingListener {
-    private final int currentRun;
+    private int currentRun;
     private final String activityType;
     private final Date startTime;
     private final AccelerometerReader accelerometerReader;
@@ -35,13 +35,14 @@ public class ModuleAccelerometerLogger implements AccelerometerReadingListener {
     public ModuleAccelerometerLogger(Context context, String activityType, long sizeOfWindow) {
         this.activityType = activityType;
         this.sizeOfWindow = sizeOfWindow;
-        this.currentRun = 1;
+        this.currentRun = 0;
         this.startTime = new Date(System.currentTimeMillis());
 
         this.accelerometerReader = new AccelerometerReader(context, this, sizeOfWindow);
     }
 
     public void startAccelerometerReadings() {
+        ++currentRun;
         accelerometerReader.startReadings();
     }
 
