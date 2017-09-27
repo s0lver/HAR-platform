@@ -46,7 +46,7 @@ public class ModuleAccelerometerPreprocessor {
      * @return The pattern corresponding to the sampling window (std dev and mean)
      */
     public double[] preProcessSamplingWindow() {
-        filterGravity();
+        // filterGravity(); disabled by the moment.
         calculateMagnitudeVector();
         calculateMean();
         calculateStandardDeviation();
@@ -60,7 +60,7 @@ public class ModuleAccelerometerPreprocessor {
     private void writeFiles() {
         String filePrefix = activityType + "_" + (sizeOfWindow / Constants.ONE_SECOND) + "_secs_";
         String partialFilePath = Environment.getExternalStorageDirectory() + File.separator +
-                "har-system" + File.separator + filePrefix;
+                "har-system-training-files" + File.separator + filePrefix;
 //        String filepathMagnitudeVector = partialFilePath + "magnitudevector_" + Constants.FILE_NAMES_SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
 //        new MagnitudeVectorFileWriter(currentRun, filepathMagnitudeVector, magnitudeVector).writeFile();
         String filepathPatterns = partialFilePath + "patterns_" + Constants.SIMPLE_DATE_FORMAT.format(startTime) + ".csv";
@@ -104,7 +104,7 @@ public class ModuleAccelerometerPreprocessor {
      * Calculates the magnitude vector from the samplingWindow list of accelerometer readings.
      */
     private void calculateMagnitudeVector() {
-        float sum;
+        double sum;
         int averagedSize = samplingWindow.size();
         magnitudeVector = new double[averagedSize];
         int i = 0;

@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
 
         String path = Environment.getExternalStorageDirectory() + File.separator + "har-system" + File.separator+ "input-records.csv";
         Log.i(this.getClass().getSimpleName(), "Trying to open path " + path);
-        reader = new SmartphoneFixesFileReader(path);
+//        reader = new SmartphoneFixesFileReader(path);
 
     }
 

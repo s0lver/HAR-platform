@@ -6,38 +6,38 @@ import java.util.Date;
  * Represents a record of an accelerometer sample
  */
 public class AccelerometerReading {
-    private float x, y, z;
+    private double x, y, z;
 
     private Date timestamp;
 
-    public AccelerometerReading(float x, float y, float z, long timestamp) {
+    public AccelerometerReading(double x, double y, double z, long timestamp) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.timestamp = new Date(timestamp);
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public float getZ() {
+    public double getZ() {
         return z;
     }
 
-    public void setZ(float z) {
+    public void setZ(double z) {
         this.z = z;
     }
 

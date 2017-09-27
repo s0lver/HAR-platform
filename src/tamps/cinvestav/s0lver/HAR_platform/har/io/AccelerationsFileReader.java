@@ -34,9 +34,9 @@ public class AccelerationsFileReader {
     private AccelerometerReadingWithRunId processLine(String line) {
         String[] slices = line.split(",");
         int run = Integer.valueOf(slices[0]);
-        float x = Float.valueOf(slices[1]);
-        float y = Float.valueOf(slices[2]);
-        float z = Float.valueOf(slices[3]);
+        double x = Double.valueOf(slices[1]);
+        double y = Double.valueOf(slices[2]);
+        double z = Double.valueOf(slices[3]);
         AccelerometerReading reading =  new AccelerometerReading(x, y, z, Long.valueOf(slices[4]));
 
         return new AccelerometerReadingWithRunId(run, reading);
